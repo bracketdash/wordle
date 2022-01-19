@@ -1,0 +1,40 @@
+.container {
+  margin: 0 auto;
+  max-width: 600px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+label, small {
+  display: block;
+}
+small {
+  margin-top: 5px;
+  color: #555;
+}
+input {
+  margin: 15px 0;
+  font-size: 40px;
+  font-family: monospace;
+  width: 100%;
+}
+.button {
+  background-color: #369;
+  border: 1px solid #147;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 40px;
+  padding: 0 20px;
+}
+.button:hover {
+  background-color: #69b;
+}
+.guess-heading {
+  margin-top: 30px;
+}
+.guess {
+  margin-top: 10px;
+  font-size: 40px;
+  font-family: monospace;
+  letter-spacing: 5px;
+}
