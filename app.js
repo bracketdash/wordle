@@ -29,14 +29,15 @@ function displayNextBestGuess() {
         if (!word.includes(entry[0])) {
           return false;
         }
+        const occurrences = word.match(entryPattern).length - (green.match(entryPattern) || []).length;
+        if (!occurrences) {
+          return false;
+        }
 
         ///// -- BUG: this doesn't work 100% of the time; need to fix
         
-        // TODO: also return false if the word only contains the yellow letter (entry[0]) in already-known wrong places (entry[1])
-        // should we just ignore the letters that are already in `green`?
-        // same problem is happening with these latest changes
+        // return false if the word only contains the yellow letter (entry[0]) in already-known wrong places (entry[1])
         
-        const occurrences = word.match(entryPattern).length - (green.match(entryPattern) || []).length;
         let wrongCount = 0;
         entry[1].forEach((wrongPosition) => {
           if (word[wrongPosition] === entry[0]) {
