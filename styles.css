@@ -1,7 +1,12 @@
+html, body {
+  box-sizing: border-box;
+}
 .container {
-  margin: 0 auto;
-  max-width: 600px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 0 auto;
+  max-width: calc(100% - 30px);
+  padding: 0 15px;
+  width: 510px;
 }
 label, small {
   display: block;
@@ -14,6 +19,7 @@ input {
   margin: 15px 0;
   font-size: 40px;
   font-family: monospace;
+  text-transform: uppercase;
   width: 100%;
 }
 .button {

@@ -12,7 +12,7 @@
       <div class="field">
         <label>GREEN: Right letters, right positions</label>
         <small>Should always be 5 characters long; use dots for blanks.</small>
-        <input type="text" value="....." id="green" />
+        <input type="text" value="....." id="green" maxlength="5" />
       </div>
       <div class="field">
         <label>YELLOW: Right letters, wrong positions</label>
@@ -26,7 +26,7 @@
       </div>
       <div class="button" id="button">Get next best word guess</div>
       <div class="guess-heading">Current guess:</div>
-      <div class="guess" id="guess">CARES</div>
+      <div class="guess" id="guess"></div>
     </div>
     <script src="words.js"></script>
     <script src="app.js"></script>
