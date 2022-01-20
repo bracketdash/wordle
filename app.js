@@ -26,18 +26,22 @@ function displayNextBestGuess() {
         }
 
         ///// -- BUG: this doesn't work 100% of the time; need to fix
-        const occurrences = word.match(entryPattern).length;
-        if (occurrences <= entry[1].length) {
-          let wrongCount = 0;
-          entry[1].forEach((wrongPosition) => {
-            if (word[wrongPosition] === entry[0]) {
-              wrongCount++;
-            }
-          });
-          if (wrongCount === occurrences) {
-            return false;
+        
+        // TODO: also return false if the word only contains the yellow letter (entry[0]) in already-known wrong places (entry[1])
+        // should we just ignore the letters that are already in `green`?
+        // same problem is happening with these latest changes
+        
+        const occurrences = word.match(entryPattern).length - (green.match(entryPattern) || []).length;
+        let wrongCount = 0;
+        entry[1].forEach((wrongPosition) => {
+          if (word[wrongPosition] === entry[0]) {
+            wrongCount++;
           }
+        });
+        if (wrongCount === occurrences) {
+          return false;
         }
+        
         /////
 
         return true;
