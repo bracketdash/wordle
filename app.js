@@ -24,6 +24,8 @@ function displayNextBestGuess() {
         if (!word.includes(entry[0])) {
           return false;
         }
+
+        ///// -- BUG: this doesn't work 100% of the time; need to fix
         const occurrences = word.match(entryPattern).length;
         if (occurrences <= entry[1].length) {
           let wrongCount = 0;
@@ -36,6 +38,8 @@ function displayNextBestGuess() {
             return false;
           }
         }
+        /////
+
         return true;
       });
     }
