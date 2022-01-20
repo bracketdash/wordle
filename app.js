@@ -1,9 +1,14 @@
 function displayNextBestGuess() {
   const green = document.getElementById("green").value.toLowerCase();
-  const yellow = [];
-  const gray = document.getElementById("gray").value.toLowerCase();
-
   const yellowStr = document.getElementById("yellow").value.toLowerCase();
+  const gray = document.getElementById("gray").value.toLowerCase();
+  
+  if (green === '.....' && !yellowStr && !gray) {
+    document.getElementById("guess").innerHTML = 'SOARE';
+    return;
+  }
+
+  const yellow = [];
   if (yellowStr.length) {
     yellowStr.split(";").forEach((seg) => {
       const ss = seg.split(":");
@@ -82,7 +87,6 @@ function displayNextBestGuess() {
     emptySlots.push(index);
     start = index + 1;
   }
-  emptySlots.reverse();
   
   const chosenLetters = [];
   const getReducedSet = (wordset, osition) => {
