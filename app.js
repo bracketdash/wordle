@@ -1,13 +1,15 @@
-function getReducedSet(wordset, posFreqs, osition) {
+function filteredByCommonLetter(wordset, posFreqs, pos) {
   if (wordset.length === 1) {
     return wordset;
   }
-  const letter = posFreqs.length > 1 ? posFreqs.pop()[0] : posFreqs[0][0];
-  const attempt = wordset.filter((w) => w[osition] === letter);
-  return attempt.length ? attempt : getReducedSet(wordset, posFreqs, osition);
+  const letter = posFreqs.pop()[0];
+  const attempt = wordset.filter((w) => w[pos] === letter);
+  return attempt.length
+    ? attempt
+    : filteredByCommonLetter(wordset, posFreqs, pos);
 }
 
-function getFilteredSet(green, yellow, gray) {
+function filteredByInputs(green, yellow, gray) {
   const pattern = new RegExp(
     gray.length ? green.replace(/\./g, `[^${gray}]`) : green
   );
@@ -57,7 +59,7 @@ function nextBestGuess() {
   if (green === "....." && !yellow && !gray) {
     return "SOARE";
   }
-  const filtered = getFilteredSet(green, yellow, gray);
+  const filtered = filteredByInputs(green, yellow, gray);
   if (!filtered || !filtered.length) {
     return "CHECK INPUT";
   }
@@ -94,7 +96,7 @@ function nextBestGuess() {
   }
   let results = filtered;
   emptySlots.forEach((osition) => {
-    results = getReducedSet(results, freqs[`p${osition}`], osition);
+    results = filteredByCommonLetter(results, freqs[`p${osition}`], osition);
   });
 
   return results[0].toUpperCase();
