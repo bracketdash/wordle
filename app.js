@@ -11,27 +11,37 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
 
 function filteredByInputs(green, yellow, gray) {
   const yellows = [];
-  const yellowsByPos = {};
+  const disallows = {};
   Array.from(Array(5).keys()).forEach((osition) => {
-    yellowsByPos[`p${osition}`] = "";
+    disallows[`p${osition}`] = gray;
   });
   if (yellow) {
     yellow.split(";").forEach((seg) => {
       const ss = seg.split(":");
       const letter = ss[0];
-      const positions = ss[1].split(",");
       yellows.push(letter);
-      // TODO: add to yellowsByPos[`p${osition}] as appropriate
+      ss[1].split(",").forEach((osition) => {
+        disallows[`p${osition}`] += letter;
+      });
     });
   }
+  Array.from(Array(5).keys()).forEach((osition) => {
+    disallows[`p${osition}`] = disallows[`p${osition}`]
+      .split("")
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .join("");
+  });
   const pattern = new RegExp(
-    green.split("").map((char, osition) => {
-      if (char === ".") {
-        return `[^${gray}${yellowsByPos[`p${osition}`]}]`;
-      } else {
-        return char;
-      }
-    })
+    green
+      .split("")
+      .map((char, osition) => {
+        if (char === ".") {
+          return `[^${disallows[`p${osition}`]}]`;
+        } else {
+          return char;
+        }
+      })
+      .join("")
   );
   const filtered = words.filter((word) => pattern.test(word));
   if (!yellow) {
