@@ -1,11 +1,10 @@
-function getReducedSet(wordset, freqs, osition) {
+function getReducedSet(wordset, posFreqs, osition) {
   if (wordset.length === 1) {
     return wordset;
   }
-  const posFreqs = freqs[`p${osition}`];
   const letter = posFreqs.length > 1 ? posFreqs.pop()[0] : posFreqs[0][0];
   const attempt = wordset.filter((w) => w[osition] === letter);
-  return attempt.length ? attempt : getReducedSet(wordset, freqs, osition);
+  return attempt.length ? attempt : getReducedSet(wordset, posFreqs, osition);
 }
 
 function getFilteredSet(green, yellow, gray) {
@@ -32,6 +31,7 @@ function getFilteredSet(green, yellow, gray) {
           if (!occurrences) {
             return false;
           }
+          // still not sure this is the right logic...
           let wrongCount = 0;
           entry[1].forEach((wrongPosition) => {
             if (word[wrongPosition] === entry[0]) {
@@ -94,7 +94,7 @@ function nextBestGuess() {
   }
   let results = filtered;
   emptySlots.forEach((osition) => {
-    results = getReducedSet(results, freqs, osition);
+    results = getReducedSet(results, freqs[`p${osition}`], osition);
   });
 
   return results[0].toUpperCase();
