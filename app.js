@@ -25,18 +25,15 @@ function filteredByInputs(green, yellow, gray) {
       });
     });
   }
-  Array.from(Array(5).keys()).forEach((osition) => {
-    disallows[`p${osition}`] = disallows[`p${osition}`]
-      .split("")
-      .filter((value, index, self) => self.indexOf(value) === index)
-      .join("");
-  });
   const pattern = new RegExp(
     green
       .split("")
       .map((char, osition) => {
         if (char === ".") {
-          return `[^${disallows[`p${osition}`]}]`;
+          return `[^${disallows[`p${osition}`]
+            .split("")
+            .filter((value, index, self) => self.indexOf(value) === index)
+            .join("")}]`;
         } else {
           return char;
         }
@@ -44,7 +41,7 @@ function filteredByInputs(green, yellow, gray) {
       .join("")
   );
   const filtered = words.filter((word) => pattern.test(word));
-  if (!yellow) {
+  if (!yellows.length) {
     return filtered;
   } else {
     return filtered.filter((word) =>
