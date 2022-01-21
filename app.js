@@ -10,24 +10,32 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
 }
 
 function filteredByInputs(green, yellow, gray) {
-  let patternStr = green.split("").map((char) => {
-    if (char === ".") {
-      // TODO: replace next line to incorporate yellow data
-      // A:0,1;B:2,3 => "a" should be added to positions 0 and 1, "b" to 2 and 3
-      return `[^${gray}]`;
-    } else {
-      return char;
-    }
+  const yellowArr = [];
+  const yellowsByPos = {};
+  Array.from(Array(5).keys()).forEach((osition) => {
+    yellowsByPos[`p${osition}`] = "";
   });
-  const pattern = new RegExp(patternStr);
-  let filtered = words.filter((word) => pattern.test(word));
   if (yellow) {
-    const yellowArr = [];
     yellow.split(";").forEach((seg) => {
       const ss = seg.split(":");
       yellowArr.push([ss[0], ss[1].split(",")]);
     });
-    filtered = filtered.filter((word) => {
+    // TODO: add to yellowsByPos[`p${osition}] as appropriate
+  }
+  const pattern = new RegExp(
+    green.split("").map((char, osition) => {
+      if (char === ".") {
+        return `[^${gray}${yellowsByPos[`p${osition}`]}]`;
+      } else {
+        return char;
+      }
+    })
+  );
+  const filtered = words.filter((word) => pattern.test(word));
+  if (!yellow) {
+    return filtered;
+  } else {
+    return filtered.filter((word) => {
       if (yellowArr.length) {
         return yellowArr.every((entry) => {
           if (!word.includes(entry[0])) {
@@ -44,7 +52,6 @@ function filteredByInputs(green, yellow, gray) {
       return true;
     });
   }
-  return filtered;
 }
 
 function nextBestGuess() {
