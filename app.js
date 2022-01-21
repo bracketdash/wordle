@@ -10,9 +10,16 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
 }
 
 function filteredByInputs(green, yellow, gray) {
-  const pattern = new RegExp(
-    gray.length ? green.replace(/\./g, `[^${gray}]`) : green
-  );
+  let patternStr = green.split("").map((char) => {
+    if (char === ".") {
+      // TODO: replace next line to incorporate yellow data
+      // A:0,1;B:2,3 => "a" should be added to positions 0 and 1, "b" to 2 and 3
+      return `[^${gray}]`;
+    } else {
+      return char;
+    }
+  });
+  const pattern = new RegExp(patternStr);
   let filtered = words.filter((word) => pattern.test(word));
   if (yellow) {
     const yellowArr = [];
@@ -23,24 +30,12 @@ function filteredByInputs(green, yellow, gray) {
     filtered = filtered.filter((word) => {
       if (yellowArr.length) {
         return yellowArr.every((entry) => {
-          const entryPattern = new RegExp(entry[0], "g");
           if (!word.includes(entry[0])) {
             return false;
           }
-          const occurrences =
-            word.match(entryPattern).length -
-            (green.match(entryPattern) || []).length;
-          if (!occurrences) {
-            return false;
-          }
-          // still not sure this is the right logic...
-          let wrongCount = 0;
-          entry[1].forEach((wrongPosition) => {
-            if (word[wrongPosition] === entry[0]) {
-              wrongCount++;
-            }
-          });
-          if (wrongCount === occurrences) {
+          const lp = new RegExp(entry[0], "g");
+          const go = (green.match(lp) || []).length;
+          if (word.match(lp).length - go === 0) {
             return false;
           }
           return true;
