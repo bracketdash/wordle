@@ -10,3 +10,18 @@
 //  GRAYS - unique letters from full history
 //  NOTHERES - yellow letters and the positions we know they're not in
 //  SOMEWHERES - yellow letters that have not subsequently been marked green
+
+function getFeedback(word, guess) {
+  const feedback = Array(5).fill("gray");
+  guess.split("").forEach((letter, index) => {
+    if (word[index] === letter) {
+      feedback[index] = "green";
+    } else if (word.includes(letter)) {
+      feedback[index] = "yellow";
+    }
+  });
+}
+
+function getInputsFromHistory(history) {
+  // TODO
+}
