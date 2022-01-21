@@ -54,13 +54,10 @@ function nextBestGuess() {
   const green = document.getElementById("green").value.toLowerCase();
   const yellow = document.getElementById("yellow").value.toLowerCase();
   const gray = document.getElementById("gray").value.toLowerCase();
-
   if (green === "....." && !yellow && !gray) {
     return "SOARE";
   }
-
   const filtered = getFilteredSet(green, yellow, gray);
-
   if (!filtered || !filtered.length) {
     return "CHECK INPUT";
   }
