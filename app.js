@@ -10,7 +10,7 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
 }
 
 function filteredByInputs(green, yellow, gray) {
-  const yellowArr = [];
+  const yellows = [];
   const yellowsByPos = {};
   Array.from(Array(5).keys()).forEach((osition) => {
     yellowsByPos[`p${osition}`] = "";
@@ -18,9 +18,11 @@ function filteredByInputs(green, yellow, gray) {
   if (yellow) {
     yellow.split(";").forEach((seg) => {
       const ss = seg.split(":");
-      yellowArr.push([ss[0], ss[1].split(",")]);
+      const letter = ss[0];
+      const positions = ss[1].split(",");
+      yellows.push(letter);
+      // TODO: add to yellowsByPos[`p${osition}] as appropriate
     });
-    // TODO: add to yellowsByPos[`p${osition}] as appropriate
   }
   const pattern = new RegExp(
     green.split("").map((char, osition) => {
@@ -35,22 +37,19 @@ function filteredByInputs(green, yellow, gray) {
   if (!yellow) {
     return filtered;
   } else {
-    return filtered.filter((word) => {
-      if (yellowArr.length) {
-        return yellowArr.every((entry) => {
-          if (!word.includes(entry[0])) {
-            return false;
-          }
-          const lp = new RegExp(entry[0], "g");
-          const go = (green.match(lp) || []).length;
-          if (word.match(lp).length - go === 0) {
-            return false;
-          }
-          return true;
-        });
-      }
-      return true;
-    });
+    return filtered.filter((word) =>
+      yellows.every((entry) => {
+        if (!word.includes(entry[0])) {
+          return false;
+        }
+        const lp = new RegExp(entry[0], "g");
+        const go = (green.match(lp) || []).length;
+        if (word.match(lp).length - go === 0) {
+          return false;
+        }
+        return true;
+      })
+    );
   }
 }
 
