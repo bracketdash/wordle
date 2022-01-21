@@ -8,15 +8,7 @@ function getReducedSet(wordset, freqs, osition) {
   return attempt.length ? attempt : getReducedSet(wordset, freqs, osition);
 }
 
-function nextBestGuess() {
-  const green = document.getElementById("green").value.toLowerCase();
-  const yellow = document.getElementById("yellow").value.toLowerCase();
-  const gray = document.getElementById("gray").value.toLowerCase();
-
-  if (green === "....." && !yellow && !gray) {
-    return "SOARE";
-  }
-
+function getFilteredSet(green, yellow, gray) {
   const pattern = new RegExp(
     gray.length ? green.replace(/\./g, `[^${gray}]`) : green
   );
@@ -55,6 +47,19 @@ function nextBestGuess() {
       return true;
     });
   }
+  return filtered;
+}
+
+function nextBestGuess() {
+  const green = document.getElementById("green").value.toLowerCase();
+  const yellow = document.getElementById("yellow").value.toLowerCase();
+  const gray = document.getElementById("gray").value.toLowerCase();
+
+  if (green === "....." && !yellow && !gray) {
+    return "SOARE";
+  }
+
+  const filtered = getFilteredSet(green, yellow, gray);
 
   if (!filtered || !filtered.length) {
     return "CHECK INPUT";
