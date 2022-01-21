@@ -1,60 +1,64 @@
-function displayNextBestGuess() {
-  const green = document.getElementById("green").value.toLowerCase();
-  const yellowStr = document.getElementById("yellow").value.toLowerCase();
-  const gray = document.getElementById("gray").value.toLowerCase();
-  
-  if (green === '.....' && !yellowStr && !gray) {
-    document.getElementById("guess").innerHTML = 'SOARE';
-    return;
+function getReducedSet(wordset, freqs, osition) {
+  if (wordset.length === 1) {
+    return wordset;
   }
+  const posFreqs = freqs[`p${osition}`];
+  const letter = posFreqs.length > 1 ? posFreqs.pop()[0] : posFreqs[0][0];
+  const attempt = wordset.filter((w) => w[osition] === letter);
+  return attempt.length ? attempt : getReducedSet(wordset, freqs, osition);
+}
 
-  const yellow = [];
-  if (yellowStr.length) {
-    yellowStr.split(";").forEach((seg) => {
-      const ss = seg.split(":");
-      yellow.push([ss[0], ss[1].split(",")]);
-    });
+function nextBestGuess() {
+  const green = document.getElementById("green").value.toLowerCase();
+  const yellow = document.getElementById("yellow").value.toLowerCase();
+  const gray = document.getElementById("gray").value.toLowerCase();
+
+  if (green === "....." && !yellow && !gray) {
+    return "SOARE";
   }
 
   const pattern = new RegExp(
     gray.length ? green.replace(/\./g, `[^${gray}]`) : green
   );
-  const filtered = words.filter((word) => {
-    if (!pattern.test(word)) {
-      return false;
-    }
-    if (yellow.length) {
-      return yellow.every((entry) => {
-        const entryPattern = new RegExp(entry[0], "g");
-        if (!word.includes(entry[0])) {
-          return false;
-        }
-        const occurrences = word.match(entryPattern).length - (green.match(entryPattern) || []).length;
-        if (!occurrences) {
-          return false;
-        }
-
-        ///// -- BUG: this doesn't work 100% of the time; need to fix
-        
-        // return false if the word only contains the yellow letter (entry[0]) in already-known wrong places (entry[1])
-        
-        let wrongCount = 0;
-        entry[1].forEach((wrongPosition) => {
-          if (word[wrongPosition] === entry[0]) {
-            wrongCount++;
+  let filtered = words.filter((word) => pattern.test(word));
+  if (yellow) {
+    const yellowArr = [];
+    yellow.split(";").forEach((seg) => {
+      const ss = seg.split(":");
+      yellowArr.push([ss[0], ss[1].split(",")]);
+    });
+    filtered = filtered.filter((word) => {
+      if (yellowArr.length) {
+        return yellowArr.every((entry) => {
+          const entryPattern = new RegExp(entry[0], "g");
+          if (!word.includes(entry[0])) {
+            return false;
           }
+          const occurrences =
+            word.match(entryPattern).length -
+            (green.match(entryPattern) || []).length;
+          if (!occurrences) {
+            return false;
+          }
+          let wrongCount = 0;
+          entry[1].forEach((wrongPosition) => {
+            if (word[wrongPosition] === entry[0]) {
+              wrongCount++;
+            }
+          });
+          if (wrongCount === occurrences) {
+            return false;
+          }
+          return true;
         });
-        if (wrongCount === occurrences) {
-          return false;
-        }
-        
-        /////
+      }
+      return true;
+    });
+  }
 
-        return true;
-      });
-    }
-    return true;
-  });
+  if (!filtered || !filtered.length) {
+    return "CHECK INPUT";
+  }
 
   const alpha = "abcdefghijklmnopqrstuvwxyz".split("");
   const freqs = {};
@@ -79,42 +83,23 @@ function displayNextBestGuess() {
     );
   });
 
-  const dot = ".";
   let emptySlots = [];
   let index;
-  let results = filtered;
   let start = 0;
-  while ((index = green.indexOf(dot, start)) > -1) {
+  while ((index = green.indexOf(".", start)) > -1) {
     emptySlots.push(index);
     start = index + 1;
   }
-  
-  const chosenLetters = [];
-  const getReducedSet = (wordset, osition) => {
-    if (wordset.length === 1) {
-      return wordset;
-    }
-    let letter = freqs[`p${osition}`].pop()[0];
-    while (freqs[`p${osition}`].length > 1 && chosenLetters.includes(letter)) {
-      letter = freqs[`p${osition}`].pop()[0];
-    }
-    const attempt = wordset.filter((w) => w[osition] === letter);
-    if (attempt.length) {
-      chosenLetters.push(letter);
-      return attempt;
-    } else {
-      return getReducedSet(wordset, osition);
-    }
-  };
+  let results = filtered;
   emptySlots.forEach((osition) => {
-    results = getReducedSet(results, osition);
+    results = getReducedSet(results, freqs, osition);
   });
 
-  document.getElementById("guess").innerHTML = results[0].toUpperCase();
+  return results[0].toUpperCase();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  document
-    .getElementById("button")
-    .addEventListener("click", displayNextBestGuess);
+  document.getElementById("button").addEventListener("click", () => {
+    document.getElementById("guess").innerHTML = nextBestGuess();
+  });
 });
