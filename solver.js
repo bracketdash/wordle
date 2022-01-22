@@ -46,32 +46,6 @@ function filteredByInputs({ gray, green, notheres, somewheres, wordset }) {
   }
 }
 
-function getFrequencyDist(wordset) {
-  const alpha = "abcdefghijklmnopqrstuvwxyz".split("");
-  const freqs = {};
-  Array.from(Array(5).keys()).forEach((osition) => {
-    freqs[`p${osition}`] = alpha.reduce((o, l) => {
-      o[l] = 0;
-      return o;
-    }, {});
-  });
-  wordset.forEach((word) => {
-    Array.from(Array(5).keys()).forEach((osition) => {
-      freqs[`p${osition}`][word[osition]]++;
-    });
-  });
-  Array.from(Array(5).keys()).forEach((osition) => {
-    freqs[`p${osition}`] = Object.keys(freqs[`p${osition}`]).map((letter) => [
-      letter,
-      freqs[`p${osition}`][letter],
-    ]);
-    freqs[`p${osition}`].sort((a, b) =>
-      a[1] > b[1] ? 1 : a[1] < b[1] ? -1 : 0
-    );
-  });
-  return freqs;
-}
-
 function getEmptySlots(green) {
   let emptySlots = [];
   let index;
@@ -81,6 +55,20 @@ function getEmptySlots(green) {
     start = index + 1;
   }
   return emptySlots;
+}
+
+function getFrequencyDist(wordset, osition) {
+  const alpha = "abcdefghijklmnopqrstuvwxyz".split("");
+  let freqs = alpha.reduce((o, l) => {
+    o[l] = 0;
+    return o;
+  }, {});
+  wordset.forEach((word) => {
+    freqs[word[osition]]++;
+  });
+  freqs = Object.keys(freqs).map((letter) => [letter, freqs[letter]]);
+  freqs.sort((a, b) => (a[1] > b[1] ? 1 : a[1] < b[1] ? -1 : 0));
+  return freqs;
 }
 
 function filteredByCommonLetter(wordset, posFreqs, pos) {
@@ -95,23 +83,16 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
 }
 
 function nextBestGuess(input) {
-  // TODO: improve the algo until it naturally gets to soare as a first guess, then remove this if block
-  if (input.green === "....." && !input.notheres.length && !input.gray) {
-    return "SOARE";
-  }
   let results = filteredByInputs(input);
   if (!results || !results.length) {
     return "CHECK INPUT";
   }
-  const freqs = getFrequencyDist(results);
-  const emptySlots = getEmptySlots(input.green);
-
-  // TODO: Our current average number of guesses is 3.83
-  // If there are improvements to be made, it's below and in `filteredByCommonLetter`
-
-  emptySlots.forEach((osition) => {
-    results = filteredByCommonLetter(results, freqs[`p${osition}`], osition);
+  getEmptySlots(input.green).forEach((osition) => {
+    results = filteredByCommonLetter(
+      results,
+      getFrequencyDist(results, osition),
+      osition
+    );
   });
-
   return results[0].toUpperCase();
 }

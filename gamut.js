@@ -81,7 +81,7 @@ function startNewWord(results) {
   const guess = "soare";
   const history = [];
   if (!wordsClone.length) {
-    console.log(JSON.stringify(results, null, 2));
+    console.log(JSON.stringify(results));
     return;
   }
   const word = wordsClone.pop();
