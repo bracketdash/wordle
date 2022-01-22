@@ -1,7 +1,3 @@
-// this file produces the contents of results.json
-
-const wordsClone = [...words]; // from words.js
-
 function getFeedback(word, guess) {
   const feedback = Array(5).fill("gray");
   const numGreens = {};
@@ -13,7 +9,10 @@ function getFeedback(word, guess) {
       } else {
         numGreens[letter] = 1;
       }
-    } else if ((word.match(new RegExp(letter, "g")) || []).length > (numGreens[letter] || 0)) {
+    } else if (
+      (word.match(new RegExp(letter, "g")) || []).length >
+      (numGreens[letter] || 0)
+    ) {
       feedback[index] = "yellow";
     }
   });
@@ -56,12 +55,16 @@ function getInputsFromHistory(history) {
   return { gray: gray.join(""), green: green.join(""), notheres, somewheres };
 }
 
-function processGuess({ guess, history, word, results }) {
+function processGuess({ guess, history, word }) {
   const feedback = getFeedback(word, guess);
   history.push({ feedback, guess });
   if (feedback.every((c) => c === "green")) {
-    results.push(history);
-    startNewWord(results);
+    if (numGuessDist[`${history.length}_guesses`]) {
+      numGuessDist[`${history.length}_guesses`]++;
+    } else {
+      numGuessDist[`${history.length}_guesses`] = 1;
+    }
+    startNewWord();
   } else {
     const { gray, green, notheres, somewheres } = getInputsFromHistory(history);
     const nextGuess = nextBestGuess({
@@ -71,24 +74,38 @@ function processGuess({ guess, history, word, results }) {
       somewheres,
       wordset: words, // from words.js
     }).toLowerCase();
-    setTimeout(() => {
-      processGuess({ guess: nextGuess, history, word, results });
-    });
+    processGuess({ guess: nextGuess, history, word });
   }
 }
 
-function startNewWord(results) {
-  const guess = "soare";
+let numGuessDist = {};
+let wordsClone = [...words]; // from words.js
+let starter = 0;
+
+function startNewWord() {
+  const guess = words[starter];
   const history = [];
   if (!wordsClone.length) {
-    console.log(JSON.stringify(results));
+    const numGuessDistPretty = Object.keys(numGuessDist)
+      .map((g) => [Number(g.substring(0, 1)), numGuessDist[g]])
+      .sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+    let totalGuesses = 0;
+    numGuessDistPretty.forEach((ng) => {
+      totalGuesses += ng[0] * ng[1];
+    });
+    if (totalGuesses / 2315 < 4) {
+      console.log(`${guess} (${starter}): ${(totalGuesses / 2315).toFixed(3)}`);
+    }
+    numGuessDist = {};
+    wordsClone = [...words];
+    starter++;
+    startNewWord();
     return;
   }
   const word = wordsClone.pop();
-  console.log(word);
   setTimeout(() => {
-    processGuess({ guess, history, word, results });
+    processGuess({ guess, history, word });
   });
 }
 
-startNewWord([]);
+startNewWord();
