@@ -203,12 +203,9 @@ function startNewWord() {
     numGuessDistPretty.forEach((ng) => {
       totalGuesses += ng[0] * ng[1];
     });
-    // "crate" @ 3.750
-    // "least" @ 3.749
-    // compare best first word to letter distributino of wordlist to see where each letter falls
-    // process.stdout.clearLine(0);
-    // process.stdout.cursorTo(0);
-    // console.log(`${guess} (${starter}): ${(totalGuesses / 2315).toFixed(3)}`);
+    // best starting words:
+    // "crate" @ 3.750 -- need to update
+    // "least" @ 3.749 -- need to update
     const contents = fs.readFileSync("results.txt");
     fs.writeFileSync(
       "results.txt",
