@@ -1,14 +1,3 @@
-function filteredByCommonLetter(wordset, posFreqs, pos) {
-  if (wordset.length === 1) {
-    return wordset;
-  }
-  const letter = posFreqs.pop()[0];
-  const attempt = wordset.filter((w) => w[pos] === letter);
-  return attempt.length
-    ? attempt
-    : filteredByCommonLetter(wordset, posFreqs, pos);
-}
-
 function filteredByInputs({ gray, green, notheres, somewheres, wordset }) {
   const disallows = {};
   Array.from(Array(5).keys()).forEach((osition) => {
@@ -57,21 +46,7 @@ function filteredByInputs({ gray, green, notheres, somewheres, wordset }) {
   }
 }
 
-function nextBestGuess({ gray, green, notheres, somewheres, wordset }) {
-  if (green === "....." && !notheres.length && !gray) {
-    return "SOARE";
-  }
-  const filtered = filteredByInputs({
-    gray,
-    green,
-    notheres,
-    somewheres,
-    wordset,
-  });
-  if (!filtered || !filtered.length) {
-    return "CHECK INPUT";
-  }
-
+function getFrequencyDist(wordset) {
   const alpha = "abcdefghijklmnopqrstuvwxyz".split("");
   const freqs = {};
   Array.from(Array(5).keys()).forEach((osition) => {
@@ -80,7 +55,7 @@ function nextBestGuess({ gray, green, notheres, somewheres, wordset }) {
       return o;
     }, {});
   });
-  filtered.forEach((word) => {
+  wordset.forEach((word) => {
     Array.from(Array(5).keys()).forEach((osition) => {
       freqs[`p${osition}`][word[osition]]++;
     });
@@ -94,7 +69,10 @@ function nextBestGuess({ gray, green, notheres, somewheres, wordset }) {
       a[1] > b[1] ? 1 : a[1] < b[1] ? -1 : 0
     );
   });
+  return freqs;
+}
 
+function getEmptySlots(green) {
   let emptySlots = [];
   let index;
   let start = 0;
@@ -102,7 +80,35 @@ function nextBestGuess({ gray, green, notheres, somewheres, wordset }) {
     emptySlots.push(index);
     start = index + 1;
   }
-  let results = filtered;
+  return emptySlots;
+}
+
+function filteredByCommonLetter(wordset, posFreqs, pos) {
+  if (wordset.length === 1) {
+    return wordset;
+  }
+  const letter = posFreqs.pop()[0];
+  const attempt = wordset.filter((w) => w[pos] === letter);
+  return attempt.length
+    ? attempt
+    : filteredByCommonLetter(wordset, posFreqs, pos);
+}
+
+function nextBestGuess(input) {
+  // TODO: improve the algo until it naturally gets to soare as a first guess, then remove this if block
+  if (input.green === "....." && !input.notheres.length && !input.gray) {
+    return "SOARE";
+  }
+  let results = filteredByInputs(input);
+  if (!results || !results.length) {
+    return "CHECK INPUT";
+  }
+  const freqs = getFrequencyDist(results);
+  const emptySlots = getEmptySlots(input.green);
+
+  // TODO: Our current average number of guesses is 3.83
+  // If there are improvements to be made, it's below and in `filteredByCommonLetter`
+
   emptySlots.forEach((osition) => {
     results = filteredByCommonLetter(results, freqs[`p${osition}`], osition);
   });
