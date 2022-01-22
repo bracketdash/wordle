@@ -4,7 +4,9 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
   }
   const letter = posFreqs.pop()[0];
   const attempt = wordset.filter((w) => w[pos] === letter);
-  return attempt.length ? attempt : filteredByCommonLetter(wordset, posFreqs, pos);
+  return attempt.length
+    ? attempt
+    : filteredByCommonLetter(wordset, posFreqs, pos);
 }
 
 function filteredByInputs({ gray, green, notheres, somewheres, wordset }) {
@@ -59,7 +61,13 @@ function nextBestGuess({ gray, green, notheres, somewheres, wordset }) {
   if (green === "....." && !notheres.length && !gray) {
     return "SOARE";
   }
-  const filtered = filteredByInputs({ gray, green, notheres, somewheres, wordset });
+  const filtered = filteredByInputs({
+    gray,
+    green,
+    notheres,
+    somewheres,
+    wordset,
+  });
   if (!filtered || !filtered.length) {
     return "CHECK INPUT";
   }
@@ -78,8 +86,13 @@ function nextBestGuess({ gray, green, notheres, somewheres, wordset }) {
     });
   });
   Array.from(Array(5).keys()).forEach((osition) => {
-    freqs[`p${osition}`] = Object.keys(freqs[`p${osition}`]).map((letter) => [letter, freqs[`p${osition}`][letter]]);
-    freqs[`p${osition}`].sort((a, b) => (a[1] > b[1] ? 1 : a[1] < b[1] ? -1 : 0));
+    freqs[`p${osition}`] = Object.keys(freqs[`p${osition}`]).map((letter) => [
+      letter,
+      freqs[`p${osition}`][letter],
+    ]);
+    freqs[`p${osition}`].sort((a, b) =>
+      a[1] > b[1] ? 1 : a[1] < b[1] ? -1 : 0
+    );
   });
 
   let emptySlots = [];
