@@ -5,17 +5,15 @@ html, body {
 .container {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin: 0 auto;
-  padding: 30px;
+  padding: 30px 0;
   text-align: center;
-  width: 380px;
+  width: 336px;
 }
 h1 {
   margin: 0;
 }
 .row {
   height: 32px;
-  margin: 0 auto;
-  width: 336px;
 }
 .history {
   margin-top: 16px;
