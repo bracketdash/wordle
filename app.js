@@ -46,12 +46,15 @@ function nextClickHandler() {
   });
   document.querySelectorAll(".history")[0].innerHTML = historyMarkup;
   const inputs = getInputsFromHistory(history);
+  const guessClone = guess;
   guess = nextBestGuess(inputs);
   posColors.forEach((_, index) => {
-    posColors[index] = "gray";
     const guessLetter = document.querySelectorAll(".guess > .letter")[index];
     guessLetter.innerHTML = guess[index];
-    guessLetter.setAttribute("class", "col letter gray");
+    if (!(guess[index] === guessClone[index] && posColors[index] === "green")) {
+      guessLetter.setAttribute("class", "col letter gray");
+      posColors[index] = "gray";
+    }
   });
 }
 
