@@ -1,7 +1,78 @@
-// best starting word is "trace" (3.7092 guesses per word)
+function getInputsFromHistory(history) {
+  const gray = [];
+  const notheresObj = {};
+  const somewheres = [];
+  let green = ".....".split("");
+  history.forEach((slice) => {
+    slice[1].forEach((color, index) => {
+      const letter = slice[0][index];
+      if (color === "green") {
+        green[index] = letter;
+        const letterInSomewheres = somewheres.indexOf(letter);
+        if (letterInSomewheres > -1) {
+          somewheres.splice(letterInSomewheres, 1);
+        }
+      } else if (color === "gray") {
+        if (!gray.includes(letter)) {
+          gray.push(letter);
+        }
+      } else {
+        if (notheresObj[letter]) {
+          if (!notheresObj[letter].includes(index)) {
+            notheresObj[letter].push(index);
+          }
+        } else {
+          notheresObj[letter] = [index];
+        }
+        if (!somewheres.includes(letter)) {
+          somewheres.push(letter);
+        }
+      }
+    });
+  });
+  const notheres = Object.keys(notheresObj).map((l) => [l, notheresObj[l]]);
+  return { gray: gray.join(""), green: green.join(""), notheres, somewheres };
+}
+
+function nextClickHandler() {
+  history.push([guess, [...posColors]]);
+  let historyMarkup = "";
+  history.forEach((slice) => {
+    historyMarkup += '<div class="row">';
+    slice[1].forEach((color, index) => {
+      historyMarkup += `<div class="col letter ${color}">${slice[0][index]}</div>`;
+    });
+    historyMarkup += "</div>";
+  });
+  document.querySelectorAll(".history")[0].innerHTML = historyMarkup;
+  guess = nextBestGuess(getInputsFromHistory(history));
+  posColors.forEach((_, index) => {
+    posColors[index] = "gray";
+    const guessLetter = document.querySelectorAll(".guess > .letter")[index];
+    guessLetter.innerHTML = guess[index];
+    guessLetter.setAttribute("class", "col letter gray");
+  });
+}
+
+function setupControlClick(el) {
+  const id = el.getAttribute("id");
+  el.addEventListener("click", () => {
+    const index = Number(id[1]);
+    const color = id.substring(2);
+    posColors[index] = color;
+    document
+      .querySelectorAll(`.guess > .letter:nth-child(${index + 1})`)[0]
+      .setAttribute("class", `col letter ${color}`);
+  });
+}
+
+const history = [];
+const posColors = Array(5).fill("gray");
+let guess = "trace";
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".button")[0].addEventListener("click", () => {
-    // TODO
-  });
+  document.querySelectorAll(".control").forEach(setupControlClick);
+  document
+    .querySelectorAll(".button")[0]
+    .addEventListener("click", nextClickHandler);
 });

@@ -1,4 +1,4 @@
-function filteredByInputs({ gray, green, notheres, somewheres, wordset }) {
+function filteredByInputs({ gray, green, notheres, somewheres }) {
   const disallows = {};
   Array.from(Array(5).keys()).forEach((osition) => {
     disallows[`p${osition}`] = gray;
@@ -26,7 +26,7 @@ function filteredByInputs({ gray, green, notheres, somewheres, wordset }) {
       })
       .join("")
   );
-  const filtered = wordset.filter((word) => pattern.test(word));
+  const filtered = words.filter((word) => pattern.test(word));
   if (!somewheres.length) {
     return filtered;
   } else {
@@ -87,6 +87,7 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
   if (wordset.length === 1) {
     return wordset;
   }
+  // BUG: Cannot read properties of undefined (reading '0')
   const letter = posFreqs.shift()[0];
   const attempt = wordset.filter((w) => w[pos] === letter);
   return attempt.length
@@ -96,9 +97,6 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
 
 function nextBestGuess(input) {
   let results = filteredByInputs(input);
-  if (!results || !results.length) {
-    return "CHECK INPUT";
-  }
   const freqs = getFrequencyDist(results);
   const emptySlots = getEmptySlots(input.green);
   emptySlots.sort((a, b) => {

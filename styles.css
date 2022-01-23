@@ -17,8 +17,15 @@ h1 {
   margin: 0 auto;
   width: 336px;
 }
+.history {
+  margin-top: 16px;
+}
+.history > .row {
+  margin-top: 4px;
+  height: 64px;
+}
 .guess {
-  margin-top: 20px;
+  margin-top: 4px;
   height: 64px;
 }
 .col {
@@ -34,6 +41,7 @@ h1 {
   font-weight: bold;
   height: 64px;
   line-height: 64px;
+  text-transform: uppercase;
 }
 .controls {
   margin-top: 2px;
