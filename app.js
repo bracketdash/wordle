@@ -45,7 +45,8 @@ function nextClickHandler() {
     historyMarkup += "</div>";
   });
   document.querySelectorAll(".history")[0].innerHTML = historyMarkup;
-  guess = nextBestGuess(getInputsFromHistory(history));
+  const inputs = getInputsFromHistory(history);
+  guess = nextBestGuess(inputs);
   posColors.forEach((_, index) => {
     posColors[index] = "gray";
     const guessLetter = document.querySelectorAll(".guess > .letter")[index];

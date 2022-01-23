@@ -87,7 +87,6 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
   if (wordset.length === 1) {
     return wordset;
   }
-  // BUG: Cannot read properties of undefined (reading '0')
   const letter = posFreqs.shift()[0];
   const attempt = wordset.filter((w) => w[pos] === letter);
   return attempt.length
@@ -107,5 +106,5 @@ function nextBestGuess(input) {
   emptySlots.forEach((osition) => {
     results = filteredByCommonLetter(results, freqs[`p${osition}`], osition);
   });
-  return results[0].toUpperCase();
+  return results[0];
 }
