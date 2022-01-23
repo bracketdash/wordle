@@ -73,10 +73,10 @@ h1 {
 }
 .instructions {
   color: #555;
-  font-size: 16px;
+  font-size: 14px;
   margin: 20px 0 0;
 }
-.next-row {
+.next-row, .replace-row {
   margin-top: 20px;
 }
 .button {
@@ -88,4 +88,13 @@ h1 {
   font-weight: bold;
   line-height: 40px;
   padding: 0 20px;
+}
+.replace {
+  background-color: #e3e6ea;
+  border-radius: 4px;
+  color: #3a3a3b;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 13px;
+  padding: 5px 10px;
 }

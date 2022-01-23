@@ -58,6 +58,21 @@ function nextClickHandler() {
   });
 }
 
+function replaceHandler() {
+  const userGuess = prompt("Your guess:");
+  if (!userGuess) {
+    return;
+  }
+  if (userGuess.length === 5) {
+    guess = userGuess;
+    guess.split("").forEach((letter, index) => {
+      document.querySelectorAll(".guess > .letter")[index].innerHTML = letter;
+    });
+  } else {
+    alert("Guesses must be 5 characters long.");
+  }
+}
+
 function setupControlClick(el) {
   const id = el.getAttribute("id");
   el.addEventListener("click", () => {
@@ -79,4 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .querySelectorAll(".button")[0]
     .addEventListener("click", nextClickHandler);
+  document
+    .querySelectorAll(".replace")[0]
+    .addEventListener("click", replaceHandler);
 });
