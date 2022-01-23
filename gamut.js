@@ -192,8 +192,13 @@ function processGuess({ guess, history, word }) {
   }
 }
 
+const candidates = [
+  "crate",
+  "trace",
+];
+
 function startNewWord() {
-  const guess = words[starter];
+  const guess = candidates[starter];
   const history = [];
   if (!wordsClone.length) {
     const numGuessDistPretty = Object.keys(numGuessDist)
@@ -203,13 +208,10 @@ function startNewWord() {
     numGuessDistPretty.forEach((ng) => {
       totalGuesses += ng[0] * ng[1];
     });
-    // best starting words:
-    // "crate" @ 3.750 -- need to update
-    // "least" @ 3.749 -- need to update
     const contents = fs.readFileSync("results.txt");
     fs.writeFileSync(
       "results.txt",
-      `${contents}\n${guess} (${starter}): ${(totalGuesses / 2315).toFixed(3)}`
+      `${contents}\n${guess} (${starter}): ${(totalGuesses / 2315)}`
     );
     numGuessDist = {};
     numWordsDone = 0;
