@@ -153,9 +153,6 @@ function getInputsFromHistory(history) {
 
 function nextBestGuess(input) {
   let results = filteredByInputs(input);
-  if (!results || !results.length) {
-    return "CHECK INPUT";
-  }
   const freqs = getFrequencyDist(results);
   const emptySlots = getEmptySlots(input.green);
   emptySlots.sort((a, b) => {
@@ -192,13 +189,8 @@ function processGuess({ guess, history, word }) {
   }
 }
 
-const candidates = [
-  "crate",
-  "trace",
-];
-
 function startNewWord() {
-  const guess = candidates[starter];
+  const guess = "trace";
   const history = [];
   if (!wordsClone.length) {
     const numGuessDistPretty = Object.keys(numGuessDist)
@@ -208,16 +200,9 @@ function startNewWord() {
     numGuessDistPretty.forEach((ng) => {
       totalGuesses += ng[0] * ng[1];
     });
-    const contents = fs.readFileSync("results.txt");
-    fs.writeFileSync(
-      "results.txt",
-      `${contents}\n${guess} (${starter}): ${(totalGuesses / 2315)}`
-    );
-    numGuessDist = {};
-    numWordsDone = 0;
-    wordsClone = [...words];
-    starter++;
-    startNewWord();
+    process.stdout.clearLine(0);
+    process.stdout.cursorTo(0);
+    console.log(`Average number of guesses: ${totalGuesses / 2315}`);
     return;
   }
   const word = wordsClone.pop();
@@ -225,7 +210,7 @@ function startNewWord() {
   process.stdout.clearLine(0);
   process.stdout.cursorTo(0);
   process.stdout.write(
-    `${guess} vs ${word} - ${((numWordsDone / 2315) * 100).toFixed(0)}%`
+    `Solving ${word}.. ${((numWordsDone / 2315) * 100).toFixed(0)}%`
   );
   setTimeout(() => {
     processGuess({ guess, history, word });
@@ -2550,11 +2535,8 @@ const words = [
   "zonal",
 ];
 
-const fs = require("fs");
-
-let numGuessDist = {};
+const numGuessDist = {};
+const wordsClone = [...words];
 let numWordsDone = 0;
-let wordsClone = [...words];
-let starter = 0;
 
 startNewWord();
