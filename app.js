@@ -1,7 +1,7 @@
 function getInputsFromHistory(history) {
-  const gray = [];
   const notheresObj = {};
   const somewheres = [];
+  let gray = [];
   let green = ".....".split("");
   history.forEach((slice) => {
     slice[1].forEach((color, index) => {
@@ -30,6 +30,7 @@ function getInputsFromHistory(history) {
       }
     });
   });
+  gray = gray.filter((g) => !somewheres.includes(g));
   const notheres = Object.keys(notheresObj).map((l) => [l, notheresObj[l]]);
   return { gray: gray.join(""), green: green.join(""), notheres, somewheres };
 }

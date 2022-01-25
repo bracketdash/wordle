@@ -72,13 +72,8 @@ function getFrequencyDist(wordset) {
     });
   });
   Array.from(Array(5).keys()).forEach((osition) => {
-    freqs[`p${osition}`] = Object.keys(freqs[`p${osition}`]).map((letter) => [
-      letter,
-      freqs[`p${osition}`][letter],
-    ]);
-    freqs[`p${osition}`].sort((a, b) =>
-      a[1] > b[1] ? -1 : a[1] < b[1] ? 1 : 0
-    );
+    freqs[`p${osition}`] = Object.keys(freqs[`p${osition}`]).map((letter) => [letter, freqs[`p${osition}`][letter]]);
+    freqs[`p${osition}`].sort((a, b) => (a[1] > b[1] ? -1 : a[1] < b[1] ? 1 : 0));
   });
   return freqs;
 }
@@ -89,9 +84,7 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
   }
   const letter = posFreqs.shift()[0];
   const attempt = wordset.filter((w) => w[pos] === letter);
-  return attempt.length
-    ? attempt
-    : filteredByCommonLetter(wordset, posFreqs, pos);
+  return attempt.length ? attempt : filteredByCommonLetter(wordset, posFreqs, pos);
 }
 
 function nextBestGuess(input) {
