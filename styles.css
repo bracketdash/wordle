@@ -1,16 +1,23 @@
-html, body {
+html,
+body {
+  font-family: Verdana, sans-serif;
   margin: 0;
   padding: 0;
 }
 .container {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin: 0 auto;
-  padding: 30px 0;
+  padding: 20px 0;
   text-align: center;
   width: 336px;
 }
 h1 {
+  background-color: #ccc;
+  color: #444;
+  font-size: 20px;
+  font-weight: normal;
   margin: 0;
+  padding: 10px;
+  text-align: center;
 }
 .row {
   height: 32px;
@@ -19,12 +26,12 @@ h1 {
   margin-top: 16px;
 }
 .history > .row {
-  margin-top: 4px;
   height: 64px;
+  margin-top: 4px;
 }
 .guess {
-  margin-top: 4px;
   height: 64px;
+  margin-top: 4px;
 }
 .col {
   float: left;
@@ -71,17 +78,13 @@ h1 {
 .control.gray:hover {
   background-color: #888;
 }
-.instructions {
-  color: #555;
-  font-size: 14px;
-  margin: 20px 0 0;
-}
-.next-row, .replace-row {
+.next-row,
+.replace-row {
   margin-top: 20px;
 }
 .button {
   background-color: #d3d6da;
-  border-radius: 4px;
+  border-radius: 3px;
   color: #1a1a1b;
   cursor: pointer;
   display: inline-block;
@@ -91,10 +94,15 @@ h1 {
 }
 .replace {
   background-color: #e3e6ea;
-  border-radius: 4px;
+  border-radius: 3px;
   color: #3a3a3b;
   cursor: pointer;
   display: inline-block;
   font-size: 13px;
   padding: 5px 10px;
+}
+.version-row {
+  color: #666;
+  font-size: 13px;
+  margin-top: 20px;
 }
