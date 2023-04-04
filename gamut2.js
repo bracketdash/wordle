@@ -9,52 +9,17 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
     : filteredByCommonLetter(wordset, posFreqs, pos);
 }
 
-function filteredByInputs({ gray, green, notheres, somewheres, wordset }) {
-  const disallows = {};
-  Array.from(Array(5).keys()).forEach((osition) => {
-    disallows[`p${osition}`] = gray;
-  });
-  if (notheres.length) {
-    notheres.forEach((entry) => {
-      const letter = entry[0];
-      entry[1].forEach((osition) => {
-        disallows[`p${osition}`] += letter;
-      });
+function getGreens(history) {
+  const greens = ".....".split("");
+  // TODO: Fix -- TypeError: Cannot read properties of undefined (reading 'forEach')
+  history.forEach((slice) => {
+    slice[1].forEach((color, index) => {
+      if (color === "green") {
+        greens[index] = slice[0][index];
+      }
     });
-  }
-  const pattern = new RegExp(
-    green
-      .split("")
-      .map((char, osition) => {
-        if (char === ".") {
-          return `[^${disallows[`p${osition}`]
-            .split("")
-            .filter((value, index, self) => self.indexOf(value) === index)
-            .join("")}]`;
-        } else {
-          return char;
-        }
-      })
-      .join("")
-  );
-  const filtered = wordset.filter((word) => pattern.test(word));
-  if (!somewheres.length) {
-    return filtered;
-  } else {
-    return filtered.filter((word) =>
-      somewheres.every((letter) => {
-        if (!word.includes(letter)) {
-          return false;
-        }
-        const lp = new RegExp(letter, "g");
-        const go = (green.match(lp) || []).length;
-        if (word.match(lp).length - go === 0) {
-          return false;
-        }
-        return true;
-      })
-    );
-  }
+  });
+  return greens;
 }
 
 function getEmptySlots(green) {
@@ -115,55 +80,71 @@ function getFrequencyDist(wordset) {
   return freqs;
 }
 
-function getInputsFromHistory(history) {
-  const gray = [];
-  const notheresObj = {};
-  const somewheres = [];
-  let green = ".....".split("");
+function getFilteredWords(history, greens) {
+  const greenPattern = new RegExp(greens.join(""));
+  let filtered = words.filter((word) => greenPattern.test(word));
   history.forEach((slice) => {
-    slice.feedback.forEach((color, index) => {
-      const letter = slice.guess[index];
-      if (color === "green") {
-        green[index] = letter;
-        const letterInSomewheres = somewheres.indexOf(letter);
-        if (letterInSomewheres > -1) {
-          somewheres.splice(letterInSomewheres, 1);
-        }
-      } else if (color === "gray") {
-        if (!gray.includes(letter)) {
-          gray.push(letter);
-        }
-      } else {
-        if (notheresObj[letter]) {
-          if (!notheresObj[letter].includes(index)) {
-            notheresObj[letter].push(index);
-          }
+    const thresholds = {};
+    const grays = [];
+    slice[1].forEach((color, index) => {
+      const letter = slice[0][index];
+      if (color === "yellow") {
+        if (thresholds[letter]) {
+          thresholds[letter]++;
         } else {
-          notheresObj[letter] = [index];
+          thresholds[letter] = 1;
         }
-        if (!somewheres.includes(letter)) {
-          somewheres.push(letter);
+        filtered = filtered.filter(
+          (word) => word.includes(letter) && word[index] !== letter
+        );
+      } else if (color === "gray") {
+        if (!grays.includes(letter)) {
+          grays.push(letter);
         }
       }
     });
+    greens.forEach((green) => {
+      if (green !== ".") {
+        if (thresholds[green]) {
+          thresholds[green]++;
+        } else {
+          thresholds[green] = 1;
+        }
+      }
+    });
+    grays.forEach((gray) => {
+      if (thresholds[gray]) {
+        const grayPattern = new RegExp(gray, "g");
+        filtered = filtered.filter((word) => {
+          const matches = word.match(grayPattern);
+          if (matches && matches.length > thresholds[gray]) {
+            return false;
+          }
+          return true;
+        });
+      } else {
+        filtered = filtered.filter((word) => !word.includes(gray));
+      }
+    });
   });
-  const notheres = Object.keys(notheresObj).map((l) => [l, notheresObj[l]]);
-  return { gray: gray.join(""), green: green.join(""), notheres, somewheres };
+  return filtered;
 }
 
-function nextBestGuess(input) {
-  let results = filteredByInputs(input);
+function nextBestGuess(history) {
+  const greens = getGreens(history);
+  let results = getFilteredWords(history, greens);
   const freqs = getFrequencyDist(results);
-  const emptySlots = getEmptySlots(input.green);
+  const emptySlots = getEmptySlots(greens);
   emptySlots.sort((a, b) => {
     const aa = freqs[`p${a}`][0][1];
     const bb = freqs[`p${b}`][0][1];
     return aa > bb ? -1 : aa < bb ? 1 : 0;
   });
+  const numFiltered = results.length;
   emptySlots.forEach((osition) => {
     results = filteredByCommonLetter(results, freqs[`p${osition}`], osition);
   });
-  return results[0].toUpperCase();
+  return [results[0], numFiltered];
 }
 
 function processGuess({ guess, history, word }) {
@@ -177,14 +158,7 @@ function processGuess({ guess, history, word }) {
     }
     startNewWord();
   } else {
-    const { gray, green, notheres, somewheres } = getInputsFromHistory(history);
-    const nextGuess = nextBestGuess({
-      gray,
-      green,
-      notheres,
-      somewheres,
-      wordset: words,
-    }).toLowerCase();
+    const nextGuess = nextBestGuess(history)[0].toLowerCase();
     processGuess({ guess: nextGuess, history, word });
   }
 }

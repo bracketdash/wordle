@@ -10,7 +10,12 @@ function nextClickHandler() {
   });
   document.querySelectorAll(".history")[0].innerHTML = historyMarkup;
   const guessClone = guess;
-  guess = nextBestGuess(history);
+  const nextBest = nextBestGuess(history);
+  guess = nextBest[0];
+  numWords = nextBest[1];
+  document.getElementById(
+    "words-filtered"
+  ).innerHTML = `${numWords} / ${words.length}`;
   posColors.forEach((_, index) => {
     const guessLetter = document.querySelectorAll(".guess > .letter")[index];
     guessLetter.innerHTML = guess[index];
@@ -51,6 +56,7 @@ function setupControlClick(el) {
 const history = [];
 const posColors = Array(5).fill("gray");
 let guess = "trace";
+let numWords = words.length;
 
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".control").forEach(setupControlClick);
