@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>Wordle Helper</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Wordle Helper</h1>
+    <div class="container">
+      <div class="history"></div>
+      <div class="guess row">
+        <div class="col letter gray">T</div>
+        <div class="col letter gray">R</div>
+        <div class="col letter gray">A</div>
+        <div class="col letter gray">C</div>
+        <div class="col letter gray">E</div>
+      </div>
+      <div class="controls row">
+        <div class="col">
+          <div class="control green" id="p0green"></div>
+          <div class="control yellow" id="p0yellow"></div>
+          <div class="control gray" id="p0gray"></div>
+        </div>
+        <div class="col">
+          <div class="control green" id="p1green"></div>
+          <div class="control yellow" id="p1yellow"></div>
+          <div class="control gray" id="p1gray"></div>
+        </div>
+        <div class="col">
+          <div class="control green" id="p2green"></div>
+          <div class="control yellow" id="p2yellow"></div>
+          <div class="control gray" id="p2gray"></div>
+        </div>
+        <div class="col">
+          <div class="control green" id="p3green"></div>
+          <div class="control yellow" id="p3yellow"></div>
+          <div class="control gray" id="p3gray"></div>
+        </div>
+        <div class="col">
+          <div class="control green" id="p4green"></div>
+          <div class="control yellow" id="p4yellow"></div>
+          <div class="control gray" id="p4gray"></div>
+        </div>
+      </div>
+      <div class="next-row">
+        <div class="button">Next Guess</div>
+      </div>
+      <div class="replace-row">
+        <div class="replace">Replace Guess</div>
+      </div>
+      <div class="version-row">v0.3.0</div>
+    </div>
+    <script src="words.js"></script>
+    <script src="solver2.js"></script>
+    <script src="app2.js"></script>
+  </body>
+</html>
