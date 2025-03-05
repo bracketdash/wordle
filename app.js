@@ -59,12 +59,18 @@ function getInputsFromHistory(history) {
 function getAISuggestion() {
   const history = getHistory();
   const inputs = getInputsFromHistory(history);
-  const aiSuggestion = nextBestGuess(inputs);
   const lastRowWord = Array.from(getLastRow().querySelectorAll("input"))
     .map((input) => input.value)
     .join("")
     .toLowerCase();
-  if (lastRowWord !== aiSuggestion) {
+  let aiSuggestion = false;
+  try {
+    aiSuggestion = nextBestGuess(inputs);
+  } catch (e) {
+    console.log("Error from solver:");
+    console.log(e);
+  }
+  if (aiSuggestion && lastRowWord !== aiSuggestion) {
     document.querySelectorAll(".row.ai input").forEach((input, index) => {
       input.value = aiSuggestion[index];
     });
