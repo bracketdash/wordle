@@ -41,7 +41,7 @@ function nextClickHandler() {
   history.forEach((slice) => {
     historyMarkup += '<div class="row">';
     slice[1].forEach((color, index) => {
-      historyMarkup += `<div class="col letter ${color}">${slice[0][index]}</div>`;
+      historyMarkup += `<input type="text" class="col letter ${color}-border" placeholer="?" value="${slice[0][index]}" />`;
     });
     historyMarkup += "</div>";
   });
@@ -53,7 +53,7 @@ function nextClickHandler() {
     const guessLetter = document.querySelectorAll(".guess > .letter")[index];
     guessLetter.innerHTML = guess[index];
     if (!(guess[index] === guessClone[index] && posColors[index] === "green")) {
-      guessLetter.setAttribute("class", "col letter gray");
+      guessLetter.setAttribute("class", "col letter gray-border");
       posColors[index] = "gray";
     }
   });
@@ -74,6 +74,37 @@ function replaceHandler() {
   }
 }
 
+function setupLetterKeydown(el, index, els) {
+  // TODO - use this to update `guess`: const id = el.getAttribute("id");
+  el.addEventListener("keydown", (event) => {
+    if (
+      (event.key.length > 1 &&
+        event.key !== "Backspace" &&
+        event.key !== "Delete") ||
+      event.ctrlKey ||
+      event.altKey ||
+      event.metaKey
+    ) {
+      return;
+    }
+    let val = el.value.replace(/[^A-Za-z]/g, "");
+    const valLength = val.length;
+    if (valLength) {
+      val = val[val.length - 1];
+      els[index + 1]?.focus();
+    }
+    el.value = val;
+    if (!valLength) {
+      if (event.key === "Backspace") {
+        els[index - 1]?.focus();
+      }
+      if (event.key === "Delete") {
+        els[index + 1]?.focus();
+      }
+    }
+  });
+}
+
 function setupControlClick(el) {
   const id = el.getAttribute("id");
   el.addEventListener("click", () => {
@@ -82,15 +113,16 @@ function setupControlClick(el) {
     posColors[index] = color;
     document
       .querySelectorAll(`.guess > .letter:nth-child(${index + 1})`)[0]
-      .setAttribute("class", `col letter ${color}`);
+      .setAttribute("class", `col letter ${color}-border`);
   });
 }
 
 const history = [];
 const posColors = Array(5).fill("gray");
-let guess = "trace";
+let guess = "?????";
 
 document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".letter").forEach(setupLetterKeydown);
   document.querySelectorAll(".control").forEach(setupControlClick);
   document
     .querySelectorAll(".button")[0]

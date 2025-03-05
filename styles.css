@@ -4,12 +4,6 @@ body {
   margin: 0;
   padding: 0;
 }
-.container {
-  margin: 0 auto;
-  padding: 20px 0;
-  text-align: center;
-  width: 336px;
-}
 h1 {
   background-color: #369;
   color: #fff;
@@ -19,85 +13,173 @@ h1 {
   padding: 10px;
   text-align: center;
 }
-.row {
-  height: 32px;
+.container {
+  margin: 0 auto;
+  padding: 16px 0;
+  text-align: center;
+  width: 352px;
 }
-.history {
+.row {
   margin-top: 16px;
 }
-.history > .row {
-  height: 64px;
-  margin-top: 4px;
+.word,
+.controls,
+.column,
+.minus-plus,
+.ai-suggestion {
+  display: flex;
+  flex-direction: row;
 }
-.guess {
-  height: 64px;
-  margin-top: 4px;
-}
-.col {
-  float: left;
-  width: 64px;
-}
-.col:not(:last-child) {
-  margin-right: 4px;
-}
-.letter {
-  color: #fff;
+.word > input {
+  border-color: #787c7e;
+  border-style: solid;
+  border-width: 6px;
+  color: #787c7e;
   font-size: 36px;
   font-weight: bold;
-  height: 64px;
-  line-height: 64px;
+  height: 36px;
+  line-height: 36px;
+  padding: 8px 0;
+  text-align: center;
   text-transform: uppercase;
+  width: 52px;
+}
+.word > input:not(:last-child),
+.column:not(:last-child),
+.button:not(:last-child) {
+  margin-right: 8px;
+}
+.word > input.green {
+  border-color: #538d4e;
+  color: #538d4e;
+}
+.word > input.yellow {
+  border-color: #b59f3b;
+  color: #b59f3b;
+}
+.word > input:placeholder-shown {
+  border-color: #ddd;
+}
+.word > input::placeholder {
+  color: #ddd;
+}
+.word > input:focus-visible {
+  outline: none;
+}
+.word:not(.ai) > input:focus-visible {
+  border-bottom-color: #333;
+  border-left-color: #ddd;
+  border-right-color: #ddd;
+  border-top-color: #ddd;
+  color: #333;
+  outline: none;
 }
 .controls {
   margin-top: 2px;
 }
-.control {
+.column > div {
   cursor: pointer;
-  float: left;
   height: 20px;
   width: 20px;
 }
-.control:not(:last-child) {
+.column > div:not(:last-child) {
   margin-right: 2px;
 }
-.green {
+.column > div.green,
+.minus-plus > .button.plus {
   background-color: #538d4e;
 }
-.control.green:hover {
+.column > div.green:hover,
+.minus-plus > .button.plus:hover {
   background-color: #695;
 }
-.yellow {
+.column > div.yellow {
   background-color: #b59f3b;
 }
-.control.yellow:hover {
+.column > div.yellow:hover {
   background-color: #ca4;
 }
-.gray {
+.column > div.gray {
   background-color: #787c7e;
 }
-.control.gray:hover {
+.column > div.gray:hover {
   background-color: #888;
 }
-.next-row,
-.replace-row {
+.minus-plus {
+  justify-content: center;
   margin-top: 20px;
 }
-.button {
-  background-color: #d3d6da;
-  border-radius: 3px;
-  color: #1a1a1b;
+.minus-plus > .button {
+  background: #555;
+  color: #fff;
   cursor: pointer;
-  display: inline-block;
+  font-size: 24px;
   font-weight: bold;
-  line-height: 40px;
-  padding: 0 20px;
+  height: 32px;
+  line-height: 30px;
+  text-align: center;
+  width: 32px;
 }
-.replace {
-  background-color: #e3e6ea;
-  border-radius: 3px;
-  color: #3a3a3b;
+.minus-plus > .button.minus {
+  background-color: #800;
+}
+.minus-plus > .button.minus:hover {
+  background-color: #911;
+}
+.minus-plus > .button.disabled {
+  background-color: #aaa;
+  cursor: default;
+}
+.ai-suggestion {
+  border-bottom: 1px solid #ccc;
+  margin-top: 32px;
+  padding-bottom: 6px;
+  padding-left: 6px;
+}
+.ai-suggestion > h2 {
+  color: #666;
+  flex-grow: 1;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: normal;
+  line-height: 26px;
+  margin: 0;
+  text-align: left;
+}
+.button.copy {
+  color: #fff;
+  font-size: 12px;
+  font-weight: normal;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 12px;
+}
+.button.copy:not(.disabled) {
+  background-color: #369;
   cursor: pointer;
-  display: inline-block;
-  font-size: 13px;
-  padding: 5px 10px;
+}
+.button.copy:not(.disabled):hover {
+  background-color: #47a;
+}
+.button.copy.disabled,
+.button.copy.disabled:hover {
+  background-color: #aaa;
+  cursor: default;
+}
+.word.ai > input {
+  border-color: #369;
+  color: #369;
+  user-select: none;
+}
+.word.ai > input::selection {
+  background: none;
+}
+.incomplete-message {
+  color: #888;
+  font-size: 14px;
+  font-style: italic;
+  padding: 12px 32px 0;
+}
+.incomplete-message.hidden {
+  display: none;
 }

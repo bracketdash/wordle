@@ -12,46 +12,62 @@
   <body>
     <h1>Wordle Helper</h1>
     <div class="container">
-      <div class="history"></div>
-      <div class="guess row">
-        <div class="col letter gray">T</div>
-        <div class="col letter gray">R</div>
-        <div class="col letter gray">A</div>
-        <div class="col letter gray">C</div>
-        <div class="col letter gray">E</div>
+      <div class="row">
+        <div class="word">
+          <input type="text" placeholder="?" />
+          <input type="text" placeholder="?" />
+          <input type="text" placeholder="?" />
+          <input type="text" placeholder="?" />
+          <input type="text" placeholder="?" />
+        </div>
+        <div class="controls">
+          <div class="column">
+            <div class="green"></div>
+            <div class="yellow"></div>
+            <div class="gray"></div>
+          </div>
+          <div class="column">
+            <div class="green"></div>
+            <div class="yellow"></div>
+            <div class="gray"></div>
+          </div>
+          <div class="column">
+            <div class="green"></div>
+            <div class="yellow"></div>
+            <div class="gray"></div>
+          </div>
+          <div class="column">
+            <div class="green"></div>
+            <div class="yellow"></div>
+            <div class="gray"></div>
+          </div>
+          <div class="column">
+            <div class="green"></div>
+            <div class="yellow"></div>
+            <div class="gray"></div>
+          </div>
+        </div>
       </div>
-      <div class="controls row">
-        <div class="col">
-          <div class="control green" id="p0green"></div>
-          <div class="control yellow" id="p0yellow"></div>
-          <div class="control gray" id="p0gray"></div>
-        </div>
-        <div class="col">
-          <div class="control green" id="p1green"></div>
-          <div class="control yellow" id="p1yellow"></div>
-          <div class="control gray" id="p1gray"></div>
-        </div>
-        <div class="col">
-          <div class="control green" id="p2green"></div>
-          <div class="control yellow" id="p2yellow"></div>
-          <div class="control gray" id="p2gray"></div>
-        </div>
-        <div class="col">
-          <div class="control green" id="p3green"></div>
-          <div class="control yellow" id="p3yellow"></div>
-          <div class="control gray" id="p3gray"></div>
-        </div>
-        <div class="col">
-          <div class="control green" id="p4green"></div>
-          <div class="control yellow" id="p4yellow"></div>
-          <div class="control gray" id="p4gray"></div>
-        </div>
+      <div class="minus-plus">
+        <div class="button disabled" title="Remove the last row">-</div>
+        <div class="button plus" title="Add a new row">+</div>
       </div>
-      <div class="next-row">
-        <div class="button">Next Guess</div>
+      <div class="ai-suggestion">
+        <h2>AI Suggestion</h2>
+        <div class="button copy disabled">Copy to new row</div>
       </div>
-      <div class="replace-row">
-        <div class="replace">Replace Guess</div>
+      <div class="row">
+        <div class="word ai">
+          <input type="text" placeholder="?" value="C" disabled />
+          <input type="text" placeholder="?" value="R" disabled />
+          <input type="text" placeholder="?" value="A" disabled />
+          <input type="text" placeholder="?" value="T" disabled />
+          <input type="text" placeholder="?" value="E" disabled />
+        </div>
+        <div class="incomplete-message hidden">
+          Please finish filling in the guesses so far, then the AI will make a
+          suggestion.
+        </div>
       </div>
     </div>
     <script src="words.js"></script>
