@@ -11,10 +11,10 @@ body {
   width: 336px;
 }
 h1 {
-  background-color: #ccc;
-  color: #444;
-  font-size: 20px;
-  font-weight: normal;
+  background-color: #369;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 400;
   margin: 0;
   padding: 10px;
   text-align: center;
@@ -100,9 +100,4 @@ h1 {
   display: inline-block;
   font-size: 13px;
   padding: 5px 10px;
-}
-.version-row {
-  color: #666;
-  font-size: 13px;
-  margin-top: 20px;
 }
