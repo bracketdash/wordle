@@ -6,8 +6,9 @@ const messageIncomplete = document.getElementById("msg-incomplete");
 const messageUnavailable = document.getElementById("msg-unavailable");
 const messageSuccess = document.getElementById("msg-success");
 
-function getHistory() {
+function getAISuggestion() {
   const history = [];
+  let aiSuggestion = false;
   document.querySelectorAll(".row:not(.ai)").forEach((row) => {
     let word = "";
     const colors = [];
@@ -17,52 +18,8 @@ function getHistory() {
     });
     history.push([word.toLowerCase(), colors]);
   });
-  return history;
-}
-
-function getInputsFromHistory(history) {
-  const notheresObj = {};
-  const somewheres = [];
-  let gray = [];
-  let green = ".....".split("");
-  history.forEach((slice) => {
-    slice[1].forEach((color, index) => {
-      const letter = slice[0][index];
-      if (color === "green") {
-        green[index] = letter;
-        const letterInSomewheres = somewheres.indexOf(letter);
-        if (letterInSomewheres > -1) {
-          somewheres.splice(letterInSomewheres, 1);
-        }
-      } else if (color === "gray") {
-        if (!gray.includes(letter)) {
-          gray.push(letter);
-        }
-      } else {
-        if (notheresObj[letter]) {
-          if (!notheresObj[letter].includes(index)) {
-            notheresObj[letter].push(index);
-          }
-        } else {
-          notheresObj[letter] = [index];
-        }
-        if (!somewheres.includes(letter)) {
-          somewheres.push(letter);
-        }
-      }
-    });
-  });
-  gray = gray.filter((g) => !somewheres.includes(g));
-  const notheres = Object.keys(notheresObj).map((l) => [l, notheresObj[l]]);
-  return { gray: gray.join(""), green: green.join(""), notheres, somewheres };
-}
-
-function getAISuggestion() {
-  const history = getHistory();
-  const inputs = getInputsFromHistory(history);
-  let aiSuggestion = false;
   try {
-    aiSuggestion = nextBestGuess(inputs);
+    aiSuggestion = nextBestGuess(history);
   } catch (e) {
     console.log("Error from solver:");
     console.log(e);
@@ -117,14 +74,14 @@ function checkBoard() {
     }
     return;
   }
-  // TODO: if all the inputs of the last row are green, show the success message and skip getting a new suggestion
   if (
     Array.from(getLastRow().querySelectorAll("input")).every(
       (input) => input.className === "green"
     )
   ) {
     resetAISuggestion();
-    switchToMessage("unavailable");
+    switchToMessage("success");
+    return;
   }
   const suggestion = getAISuggestion();
   if (suggestion) {

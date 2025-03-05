@@ -72,8 +72,13 @@ function getFrequencyDist(wordset) {
     });
   });
   Array.from(Array(5).keys()).forEach((osition) => {
-    freqs[`p${osition}`] = Object.keys(freqs[`p${osition}`]).map((letter) => [letter, freqs[`p${osition}`][letter]]);
-    freqs[`p${osition}`].sort((a, b) => (a[1] > b[1] ? -1 : a[1] < b[1] ? 1 : 0));
+    freqs[`p${osition}`] = Object.keys(freqs[`p${osition}`]).map((letter) => [
+      letter,
+      freqs[`p${osition}`][letter],
+    ]);
+    freqs[`p${osition}`].sort((a, b) =>
+      a[1] > b[1] ? -1 : a[1] < b[1] ? 1 : 0
+    );
   });
   return freqs;
 }
@@ -84,10 +89,50 @@ function filteredByCommonLetter(wordset, posFreqs, pos) {
   }
   const letter = posFreqs.shift()[0];
   const attempt = wordset.filter((w) => w[pos] === letter);
-  return attempt.length ? attempt : filteredByCommonLetter(wordset, posFreqs, pos);
+  return attempt.length
+    ? attempt
+    : filteredByCommonLetter(wordset, posFreqs, pos);
 }
 
-function nextBestGuess(input) {
+function getInputFromHistory(history) {
+  const notheresObj = {};
+  const somewheres = [];
+  let gray = [];
+  let green = ".....".split("");
+  history.forEach((slice) => {
+    slice[1].forEach((color, index) => {
+      const letter = slice[0][index];
+      if (color === "green") {
+        green[index] = letter;
+        const letterInSomewheres = somewheres.indexOf(letter);
+        if (letterInSomewheres > -1) {
+          somewheres.splice(letterInSomewheres, 1);
+        }
+      } else if (color === "gray") {
+        if (!gray.includes(letter)) {
+          gray.push(letter);
+        }
+      } else {
+        if (notheresObj[letter]) {
+          if (!notheresObj[letter].includes(index)) {
+            notheresObj[letter].push(index);
+          }
+        } else {
+          notheresObj[letter] = [index];
+        }
+        if (!somewheres.includes(letter)) {
+          somewheres.push(letter);
+        }
+      }
+    });
+  });
+  gray = gray.filter((g) => !somewheres.includes(g));
+  const notheres = Object.keys(notheresObj).map((l) => [l, notheresObj[l]]);
+  return { gray: gray.join(""), green: green.join(""), notheres, somewheres };
+}
+
+function nextBestGuess(history) {
+  const input = getInputFromHistory(history);
   let results = filteredByInputs(input);
   const freqs = getFrequencyDist(results);
   const emptySlots = getEmptySlots(input.green);
