@@ -175,12 +175,12 @@ h1 {
 .ai > .word > input::selection {
   background: none;
 }
-.incomplete-message {
+.message {
   color: #888;
   font-size: 14px;
   font-style: italic;
   padding: 12px 32px 0;
 }
-.incomplete-message.hidden {
+.message.hidden {
   display: none;
 }

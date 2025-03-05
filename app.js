@@ -3,12 +3,22 @@ const buttonPlus = document.getElementById("btn-plus");
 const buttonCopy = document.getElementById("btn-copy");
 
 const messageIncomplete = document.getElementById("msg-incomplete");
+const messageUnavailable = document.getElementById("msg-unavailable");
 
 function getAISuggestion() {
   // TODO: compile the args for nextBestGuess() from inputs
-  // TODO: update the values for the ai suggestion input
-  // TODO: enable the copy button
-  // TODO: add `hidden` class to .incomplete-message
+  // TODO: determine if ai suggestion and last row differ
+  let aiAndLastRowDiffer = false;
+  if (aiAndLastRowDiffer) {
+    // TODO: update the ai suggestion input values
+    buttonCopy.classList.remove("disabled");
+    messageIncomplete.classList.add("hidden");
+    messageUnavailable.classList.add("hidden");
+  } else {
+    resetAISuggestion();
+    messageIncomplete.classList.add("hidden");
+    messageUnavailable.classList.remove("hidden");
+  }
 }
 
 function resetAISuggestion() {
@@ -17,15 +27,18 @@ function resetAISuggestion() {
   });
   buttonCopy.classList.add("disabled");
   messageIncomplete.classList.remove("hidden");
+  messageUnavailable.classList.add("hidden");
 }
 
 function checkBoard() {
-  // TODO: run this whenever an input value changes
-  // TODO: run this when a row is removed
-  // TODO: run this whenever the copy button is clicked
-  // TODO: check if board (the inputs) is complete (doesn't have any "?" left)
-  // TODO: if it is not complete: resetAISuggestion()
-  // TODO: if complete: getAISuggestion()
+  const hasBlanks = Array.from(
+    document.querySelectorAll(".row:not(.ai) input")
+  ).some((input) => !input.value);
+  if (hasBlanks) {
+    resetAISuggestion();
+  } else {
+    getAISuggestion();
+  }
 }
 
 function handleClickColor(event) {
