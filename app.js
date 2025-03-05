@@ -5,12 +5,69 @@ const buttonCopy = document.getElementById("btn-copy");
 const messageIncomplete = document.getElementById("msg-incomplete");
 const messageUnavailable = document.getElementById("msg-unavailable");
 
+function getHistory() {
+  const history = [];
+  document.querySelectorAll(".row:not(.ai)").forEach((row) => {
+    let word = "";
+    const colors = [];
+    row.querySelectorAll("input").forEach((input) => {
+      word += input.value;
+      colors.push(input.className || "gray");
+    });
+    history.push([word.toLowerCase(), colors]);
+  });
+  return history;
+}
+
+function getInputsFromHistory(history) {
+  const notheresObj = {};
+  const somewheres = [];
+  let gray = [];
+  let green = ".....".split("");
+  history.forEach((slice) => {
+    slice[1].forEach((color, index) => {
+      const letter = slice[0][index];
+      if (color === "green") {
+        green[index] = letter;
+        const letterInSomewheres = somewheres.indexOf(letter);
+        if (letterInSomewheres > -1) {
+          somewheres.splice(letterInSomewheres, 1);
+        }
+      } else if (color === "gray") {
+        if (!gray.includes(letter)) {
+          gray.push(letter);
+        }
+      } else {
+        if (notheresObj[letter]) {
+          if (!notheresObj[letter].includes(index)) {
+            notheresObj[letter].push(index);
+          }
+        } else {
+          notheresObj[letter] = [index];
+        }
+        if (!somewheres.includes(letter)) {
+          somewheres.push(letter);
+        }
+      }
+    });
+  });
+  gray = gray.filter((g) => !somewheres.includes(g));
+  const notheres = Object.keys(notheresObj).map((l) => [l, notheresObj[l]]);
+  return { gray: gray.join(""), green: green.join(""), notheres, somewheres };
+}
+
 function getAISuggestion() {
-  // TODO: compile the args for nextBestGuess() from inputs
-  // TODO: determine if ai suggestion and last row differ
-  let aiAndLastRowDiffer = false;
-  if (aiAndLastRowDiffer) {
-    // TODO: update the ai suggestion input values
+  const history = getHistory();
+  const inputs = getInputsFromHistory(history);
+  const aiSuggestion = nextBestGuess(inputs);
+  const lastRowWord = Array.from(getLastRow().querySelectorAll("input"))
+    .map((input) => input.value)
+    .join("")
+    .toLowerCase();
+  if (lastRowWord !== aiSuggestion) {
+    document.querySelectorAll(".row.ai input").forEach((input, index) => {
+      input.value = aiSuggestion[index];
+    });
     buttonCopy.classList.remove("disabled");
     messageIncomplete.classList.add("hidden");
     messageUnavailable.classList.add("hidden");
@@ -52,6 +109,7 @@ function handleClickColor(event) {
     if (this.classList[0] === "green" || this.classList[0] === "yellow") {
       wordInputs[columnIndex].classList.add(this.classList[0]);
     }
+    checkBoard();
   }
 }
 
@@ -107,8 +165,10 @@ function handleClickPlus() {
   const clone = original.cloneNode(true);
   original.parentNode.insertBefore(clone, original.nextSibling);
   clone.querySelectorAll("input").forEach((input) => {
-    input.classList.remove("green", "yellow");
-    input.value = "";
+    input.classList.remove("yellow");
+    if (input.className !== "green") {
+      input.value = "";
+    }
   });
   addRowListeners();
   resetAISuggestion();
@@ -139,7 +199,6 @@ function handleClickCopy() {
   getLastRow()
     .querySelectorAll("input")
     .forEach((input, index) => {
-      input.classList.remove("green", "yellow");
       input.value = aiSuggestion[index];
     });
   checkBoard();
