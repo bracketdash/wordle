@@ -4,6 +4,7 @@ const buttonCopy = document.getElementById("btn-copy");
 
 const messageIncomplete = document.getElementById("msg-incomplete");
 const messageUnavailable = document.getElementById("msg-unavailable");
+const messageSuccess = document.getElementById("msg-success");
 
 function getHistory() {
   const history = [];
@@ -59,10 +60,6 @@ function getInputsFromHistory(history) {
 function getAISuggestion() {
   const history = getHistory();
   const inputs = getInputsFromHistory(history);
-  const lastRowWord = Array.from(getLastRow().querySelectorAll("input"))
-    .map((input) => input.value)
-    .join("")
-    .toLowerCase();
   let aiSuggestion = false;
   try {
     aiSuggestion = nextBestGuess(inputs);
@@ -70,17 +67,25 @@ function getAISuggestion() {
     console.log("Error from solver:");
     console.log(e);
   }
-  if (aiSuggestion && lastRowWord !== aiSuggestion) {
-    document.querySelectorAll(".row.ai input").forEach((input, index) => {
-      input.value = aiSuggestion[index];
-    });
-    buttonCopy.classList.remove("disabled");
-    messageIncomplete.classList.add("hidden");
-    messageUnavailable.classList.add("hidden");
-  } else {
-    resetAISuggestion();
-    messageIncomplete.classList.add("hidden");
-    messageUnavailable.classList.remove("hidden");
+  return aiSuggestion;
+}
+
+function switchToMessage(whichOne) {
+  messageIncomplete.classList.add("hidden");
+  messageUnavailable.classList.add("hidden");
+  messageSuccess.classList.add("hidden");
+  if (whichOne) {
+    switch (whichOne) {
+      case "incomplete":
+        messageIncomplete.classList.remove("hidden");
+        break;
+      case "unavailable":
+        messageUnavailable.classList.remove("hidden");
+        break;
+      case "success":
+        messageSuccess.classList.remove("hidden");
+        break;
+    }
   }
 }
 
@@ -89,22 +94,48 @@ function resetAISuggestion() {
     input.value = "";
   });
   buttonCopy.classList.add("disabled");
-  messageIncomplete.classList.remove("hidden");
-  messageUnavailable.classList.add("hidden");
+  switchToMessage("incomplete");
+}
+
+function showAISuggestion(suggestion) {
+  document.querySelectorAll(".row.ai input").forEach((input, index) => {
+    input.value = suggestion[index];
+  });
+  buttonCopy.classList.remove("disabled");
+  switchToMessage(false);
 }
 
 function checkBoard() {
-  const hasBlanks = Array.from(
-    document.querySelectorAll(".row:not(.ai) input")
-  ).some((input) => !input.value);
-  if (hasBlanks) {
+  const board = Array.from(document.querySelectorAll(".row:not(.ai) input"))
+    .map((input) => input.value || "?")
+    .join("");
+  if (board.includes("?")) {
+    if (board === "?????") {
+      showAISuggestion("crate");
+    } else {
+      resetAISuggestion();
+    }
+    return;
+  }
+  // TODO: if all the inputs of the last row are green, show the success message and skip getting a new suggestion
+  if (
+    Array.from(getLastRow().querySelectorAll("input")).every(
+      (input) => input.className === "green"
+    )
+  ) {
     resetAISuggestion();
+    switchToMessage("unavailable");
+  }
+  const suggestion = getAISuggestion();
+  if (suggestion) {
+    showAISuggestion(suggestion);
   } else {
-    getAISuggestion();
+    resetAISuggestion();
+    switchToMessage("unavailable");
   }
 }
 
-function handleClickColor(event) {
+function handleClickColor() {
   const row = this.closest(".row");
   const column = this.parentElement;
   const columns = Array.from(row.querySelectorAll(".controls .column"));
