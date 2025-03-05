@@ -57,7 +57,8 @@ h1 {
   border-color: #b59f3b;
   color: #b59f3b;
 }
-.word > input:placeholder-shown {
+.word > input:placeholder-shown,
+.ai > .word > input:placeholder-shown {
   border-color: #ddd;
 }
 .word > input::placeholder {
@@ -166,12 +167,12 @@ h1 {
   background-color: #aaa;
   cursor: default;
 }
-.word.ai > input {
+.ai > .word > input {
   border-color: #369;
   color: #369;
   user-select: none;
 }
-.word.ai > input::selection {
+.ai > .word > input::selection {
   background: none;
 }
 .incomplete-message {

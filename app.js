@@ -1,12 +1,22 @@
+const buttonMinus = document.getElementById("btn-minus");
+const buttonPlus = document.getElementById("btn-plus");
+const buttonCopy = document.getElementById("btn-copy");
+
+const messageIncomplete = document.getElementById("msg-incomplete");
+
 function getAISuggestion() {
   // TODO: compile the args for nextBestGuess() from inputs
   // TODO: update the values for the ai suggestion input
   // TODO: enable the copy button
+  // TODO: add `hidden` class to .incomplete-message
 }
 
 function resetAISuggestion() {
-  // TODO: blank out the values for the ai inputs
-  // TODO: disable the copy button
+  document.querySelectorAll(".row.ai > .word > input").forEach((input) => {
+    input.value = "";
+  });
+  buttonCopy.classList.add("disabled");
+  messageIncomplete.classList.remove("hidden");
 }
 
 function checkBoard() {
@@ -18,13 +28,22 @@ function checkBoard() {
   // TODO: if complete: getAISuggestion()
 }
 
-function handleKeydown(event) {
-  event.preventDefault();
-  // TODO: detect which key was pressed and handle accordingly
+function handleClickColor(event) {
+  const row = this.closest(".row");
+  const column = this.parentElement;
+  const columns = Array.from(row.querySelectorAll(".controls .column"));
+  const columnIndex = columns.indexOf(column);
+  const wordInputs = row.querySelectorAll(".word input");
+  if (wordInputs[columnIndex]) {
+    wordInputs[columnIndex].classList.remove("green", "yellow");
+    if (this.classList[0] === "green" || this.classList[0] === "yellow") {
+      wordInputs[columnIndex].classList.add(this.classList[0]);
+    }
+  }
 }
 
-function handleClickColor(event) {
-  // TODO: update class of associated input
+function getNumRows() {
+  return document.querySelectorAll(".row:not(.ai)").length;
 }
 
 function getLastRow() {
@@ -57,32 +76,65 @@ function removeRowListeners() {
 }
 
 function handleClickMinus() {
-  // TODO: if there is only one row, exit early
+  if (getNumRows() === 1) {
+    return;
+  }
   removeRowListeners();
-  // TODO: remove the last row
+  getLastRow().remove();
+  if (getNumRows() === 1) {
+    buttonMinus.classList.remove("minus");
+    buttonMinus.classList.add("disabled");
+  }
   checkBoard();
-  // TODO: if there is only one row now, disable the minus button
+  getLastRow().querySelector("input:last-child").focus();
 }
 
 function handleClickPlus() {
-  // TODO: add a new row to the bottom
+  const original = getLastRow();
+  const clone = original.cloneNode(true);
+  original.parentNode.insertBefore(clone, original.nextSibling);
+  clone.querySelectorAll("input").forEach((input) => {
+    input.classList.remove("green", "yellow");
+    input.value = "";
+  });
   addRowListeners();
   resetAISuggestion();
-  // TODO: if there are at least 2 rows now, enable the minus button
+  if (getNumRows() > 1) {
+    buttonMinus.classList.remove("disabled");
+    buttonMinus.classList.add("minus");
+  }
+  getLastRow().querySelector("input").focus();
 }
 
 function handleClickCopy() {
-  // TODO: if there is not an ai suggestion, exit early
-  // TODO: create a new row, prefilled with the ai suggestion
+  const aiSuggestion = Array.from(
+    document.querySelectorAll(".row.ai > .word > input")
+  )
+    .map((input) => input.value)
+    .join("");
+  if (aiSuggestion.length !== 5) {
+    return;
+  }
+  const lastRowWord = Array.from(getLastRow().querySelectorAll("input"))
+    .map((input) => input.value)
+    .join("");
+  if (lastRowWord.length) {
+    handleClickPlus();
+  } else {
+    resetAISuggestion();
+  }
+  getLastRow()
+    .querySelectorAll("input")
+    .forEach((input, index) => {
+      input.classList.remove("green", "yellow");
+      input.value = aiSuggestion[index];
+    });
   checkBoard();
 }
-
-const buttonMinus = document.getElementById("btn-minus");
-const buttonPlus = document.getElementById("btn-plus");
-const buttonCopy = document.getElementById("btn-copy");
 
 buttonMinus.addEventListener("click", handleClickMinus);
 buttonPlus.addEventListener("click", handleClickPlus);
 buttonCopy.addEventListener("click", handleClickCopy);
 
 addRowListeners();
+getLastRow().querySelector("input").focus();

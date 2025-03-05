@@ -49,22 +49,24 @@
         </div>
       </div>
       <div class="minus-plus">
-        <div id="btn-minus" class="button disabled" title="Remove the last row">-</div>
+        <div id="btn-minus" class="button disabled" title="Remove the last row">
+          -
+        </div>
         <div id="btn-plus" class="button plus" title="Add a new row">+</div>
       </div>
       <div class="ai-suggestion">
         <h2>AI Suggestion</h2>
-        <div id="btn-copy" class="button copy disabled">Copy to new row</div>
+        <div id="btn-copy" class="button copy">Copy to above</div>
       </div>
-      <div class="row">
-        <div class="word ai">
+      <div class="row ai">
+        <div class="word">
           <input type="text" placeholder="?" value="C" disabled />
           <input type="text" placeholder="?" value="R" disabled />
           <input type="text" placeholder="?" value="A" disabled />
           <input type="text" placeholder="?" value="T" disabled />
           <input type="text" placeholder="?" value="E" disabled />
         </div>
-        <div class="incomplete-message hidden">
+        <div id="msg-incomplete" class="incomplete-message hidden">
           Please finish filling in the guesses so far, then the AI will make a
           suggestion.
         </div>
@@ -72,6 +74,7 @@
     </div>
     <script src="words.js"></script>
     <script src="solver.js"></script>
+    <script src="navigation.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
