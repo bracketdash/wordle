@@ -1,84 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
-    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Wordle Helper</title>
     <link rel="stylesheet" href="styles.css" />
+    <meta name="theme-color" content="#369" />
   </head>
   <body>
-    <h1>Wordle Helper</h1>
-    <div class="container">
-      <div class="row">
-        <div class="word">
-          <input type="text" placeholder="?" />
-          <input type="text" placeholder="?" />
-          <input type="text" placeholder="?" />
-          <input type="text" placeholder="?" />
-          <input type="text" placeholder="?" />
+    <main class="app-container">
+      <div class="header">
+        <h1>Wordle Helper</h1>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="word">
+            <input type="text" placeholder="?" />
+            <input type="text" placeholder="?" />
+            <input type="text" placeholder="?" />
+            <input type="text" placeholder="?" />
+            <input type="text" placeholder="?" />
+          </div>
+          <div class="controls">
+            <div class="column">
+              <div class="green"></div>
+              <div class="yellow"></div>
+              <div class="gray"></div>
+            </div>
+            <div class="column">
+              <div class="green"></div>
+              <div class="yellow"></div>
+              <div class="gray"></div>
+            </div>
+            <div class="column">
+              <div class="green"></div>
+              <div class="yellow"></div>
+              <div class="gray"></div>
+            </div>
+            <div class="column">
+              <div class="green"></div>
+              <div class="yellow"></div>
+              <div class="gray"></div>
+            </div>
+            <div class="column">
+              <div class="green"></div>
+              <div class="yellow"></div>
+              <div class="gray"></div>
+            </div>
+          </div>
         </div>
-        <div class="controls">
-          <div class="column">
-            <div class="green"></div>
-            <div class="yellow"></div>
-            <div class="gray"></div>
+        <div class="minus-plus">
+          <div
+            id="btn-minus"
+            class="button disabled"
+            title="Remove the last row"
+          >
+            -
           </div>
-          <div class="column">
-            <div class="green"></div>
-            <div class="yellow"></div>
-            <div class="gray"></div>
+          <div id="btn-plus" class="button plus" title="Add a new row">+</div>
+        </div>
+        <div class="ai-suggestion">
+          <h2>AI Suggestion</h2>
+          <div id="btn-copy" class="button copy">Copy to above</div>
+        </div>
+        <div class="row ai">
+          <div class="word">
+            <input type="text" placeholder="?" value="C" disabled />
+            <input type="text" placeholder="?" value="R" disabled />
+            <input type="text" placeholder="?" value="A" disabled />
+            <input type="text" placeholder="?" value="T" disabled />
+            <input type="text" placeholder="?" value="E" disabled />
           </div>
-          <div class="column">
-            <div class="green"></div>
-            <div class="yellow"></div>
-            <div class="gray"></div>
+          <div id="msg-incomplete" class="message hidden">
+            Please finish filling in the guesses so far, then the AI will make a
+            suggestion.
           </div>
-          <div class="column">
-            <div class="green"></div>
-            <div class="yellow"></div>
-            <div class="gray"></div>
+          <div id="msg-unavailable" class="message hidden">
+            No suggestion available! Double-check the letters and colors above;
+            if those are all correct, the wordlist may be outdated.
           </div>
-          <div class="column">
-            <div class="green"></div>
-            <div class="yellow"></div>
-            <div class="gray"></div>
+          <div id="msg-success" class="message hidden">
+            Puzzle solved! Come back soon!
           </div>
         </div>
       </div>
-      <div class="minus-plus">
-        <div id="btn-minus" class="button disabled" title="Remove the last row">
-          -
-        </div>
-        <div id="btn-plus" class="button plus" title="Add a new row">+</div>
-      </div>
-      <div class="ai-suggestion">
-        <h2>AI Suggestion</h2>
-        <div id="btn-copy" class="button copy">Copy to above</div>
-      </div>
-      <div class="row ai">
-        <div class="word">
-          <input type="text" placeholder="?" value="C" disabled />
-          <input type="text" placeholder="?" value="R" disabled />
-          <input type="text" placeholder="?" value="A" disabled />
-          <input type="text" placeholder="?" value="T" disabled />
-          <input type="text" placeholder="?" value="E" disabled />
-        </div>
-        <div id="msg-incomplete" class="message hidden">
-          Please finish filling in the guesses so far, then the AI will make a
-          suggestion.
-        </div>
-        <div id="msg-unavailable" class="message hidden">
-          No suggestion available! Double-check the letters and colors above; if
-          those are all correct, the wordlist may be outdated.
-        </div>
-        <div id="msg-success" class="message hidden">
-          Puzzle solved! Come back soon!
-        </div>
-      </div>
-    </div>
+    </main>
     <script src="words.js"></script>
     <script src="solver.js"></script>
     <script src="navigation.js"></script>

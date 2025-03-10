@@ -1,27 +1,40 @@
 html,
 body {
-  font-family: Verdana, sans-serif;
+  background-color: #fff;
+  font-family: "Helvetica", "Arial", "Verdana", sans-serif;
   margin: 0;
   padding: 0;
 }
-h1 {
+
+.app-container {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.header {
   background-color: #369;
+  padding: 10px 0;
+}
+
+.header > h1 {
   color: #fff;
   font-size: 24px;
   font-weight: 400;
   margin: 0;
-  padding: 10px;
   text-align: center;
 }
+
 .container {
   margin: 0 auto;
   padding: 16px 0;
   text-align: center;
   width: 352px;
 }
+
 .row {
   margin-top: 16px;
 }
+
 .word,
 .controls,
 .column,
@@ -30,6 +43,7 @@ h1 {
   display: flex;
   flex-direction: row;
 }
+
 .word > input {
   border-color: #787c7e;
   border-style: solid;
@@ -44,29 +58,36 @@ h1 {
   text-transform: uppercase;
   width: 52px;
 }
+
 .word > input:not(:last-child),
 .column:not(:last-child),
 .button:not(:last-child) {
   margin-right: 8px;
 }
+
 .word > input.green {
   border-color: #538d4e;
   color: #538d4e;
 }
+
 .word > input.yellow {
   border-color: #b59f3b;
   color: #b59f3b;
 }
+
 .word > input:placeholder-shown,
 .ai > .word > input:placeholder-shown {
   border-color: #ddd;
 }
+
 .word > input::placeholder {
   color: #ddd;
 }
+
 .word > input:focus-visible {
   outline: none;
 }
+
 .word:not(.ai) > input:focus-visible {
   border-bottom-color: #333;
   border-left-color: #ddd;
@@ -75,41 +96,52 @@ h1 {
   color: #333;
   outline: none;
 }
+
 .controls {
   margin-top: 2px;
 }
+
 .column > div {
   cursor: pointer;
   height: 20px;
   width: 20px;
 }
+
 .column > div:not(:last-child) {
   margin-right: 2px;
 }
+
 .column > div.green,
 .minus-plus > .button.plus {
   background-color: #538d4e;
 }
+
 .column > div.green:hover,
 .minus-plus > .button.plus:hover {
   background-color: #695;
 }
+
 .column > div.yellow {
   background-color: #b59f3b;
 }
+
 .column > div.yellow:hover {
   background-color: #ca4;
 }
+
 .column > div.gray {
   background-color: #787c7e;
 }
+
 .column > div.gray:hover {
   background-color: #888;
 }
+
 .minus-plus {
   justify-content: center;
   margin-top: 20px;
 }
+
 .minus-plus > .button {
   background: #555;
   color: #fff;
@@ -121,22 +153,27 @@ h1 {
   text-align: center;
   width: 32px;
 }
+
 .minus-plus > .button.minus {
   background-color: #800;
 }
+
 .minus-plus > .button.minus:hover {
   background-color: #911;
 }
+
 .minus-plus > .button.disabled {
   background-color: #aaa;
   cursor: default;
 }
+
 .ai-suggestion {
   border-bottom: 1px solid #ccc;
   margin-top: 32px;
   padding-bottom: 6px;
   padding-left: 6px;
 }
+
 .ai-suggestion > h2 {
   color: #666;
   flex-grow: 1;
@@ -147,6 +184,7 @@ h1 {
   margin: 0;
   text-align: left;
 }
+
 .button.copy {
   color: #fff;
   font-size: 12px;
@@ -155,32 +193,39 @@ h1 {
   line-height: 26px;
   padding: 0 12px;
 }
+
 .button.copy:not(.disabled) {
   background-color: #369;
   cursor: pointer;
 }
+
 .button.copy:not(.disabled):hover {
   background-color: #47a;
 }
+
 .button.copy.disabled,
 .button.copy.disabled:hover {
   background-color: #aaa;
   cursor: default;
 }
+
 .ai > .word > input {
   border-color: #369;
   color: #369;
   user-select: none;
 }
+
 .ai > .word > input::selection {
   background: none;
 }
+
 .message {
   color: #888;
   font-size: 14px;
   font-style: italic;
   padding: 12px 32px 0;
 }
+
 .message.hidden {
   display: none;
 }
