@@ -1,4 +1,4 @@
-# Wordle Suggestion Engine
+# Wordle Helper
 
 1. Go here: https://bracketdash.github.io/wordle/
 2. Input your guesses so far and what colors the game gave them.
