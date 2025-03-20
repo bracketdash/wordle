@@ -1,3 +1,34 @@
+function makeWordsFrom(trie) {
+  const wordlist = [];
+  const stack = [[trie, ""]];
+  while (stack.length > 0) {
+    const [currentNode, prefix] = stack.pop();
+    if (currentNode.$) {
+      wordlist.push(prefix);
+    }
+    const chars = Object.keys(currentNode).filter((key) => key !== "$");
+    for (let i = chars.length - 1; i >= 0; i--) {
+      const char = chars[i];
+      stack.push([currentNode[char], prefix + char]);
+    }
+  }
+  return wordlist;
+}
+
+function decompress(compressed) {
+  let decompressed = compressed;
+  decompressed = decompressed.replace(/([A-Z])/g, (c) => c.toLowerCase() + "$");
+  decompressed = decompressed.replace(/([a-z])/g, '"$1":{');
+  decompressed = decompressed.replace(/([0-9]+)/g, "$1,").slice(0, -1);
+  decompressed = decompressed.replace(/\$([^0-9])/g, "$,$1");
+  const getEndBrackets = (c) => "}".repeat(parseInt(c, 10));
+  decompressed = decompressed.replace(/([0-9]+)/g, getEndBrackets);
+  decompressed = decompressed.replaceAll("$", '"$":1');
+  return makeWordsFrom(JSON.parse(decompressed));
+}
+
+const words = decompress(compressedTrie);
+
 function filteredByInputs({ gray, green, notheres, somewheres }) {
   const disallows = {};
   Array.from(Array(5).keys()).forEach((osition) => {
