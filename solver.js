@@ -1,33 +1,41 @@
-function makeWordsFrom(trie) {
-  const wordlist = [];
-  const stack = [[trie, ""]];
-  while (stack.length > 0) {
-    const [currentNode, prefix] = stack.pop();
-    if (currentNode.$) {
-      wordlist.push(prefix);
-    }
-    const chars = Object.keys(currentNode).filter((key) => key !== "$");
-    for (let i = chars.length - 1; i >= 0; i--) {
-      const char = chars[i];
-      stack.push([currentNode[char], prefix + char]);
-    }
-  }
-  return wordlist;
-}
-
 function decompress(compressed) {
-  let decompressed = compressed;
-  decompressed = decompressed.replace(/([A-Z])/g, (c) => c.toLowerCase() + "$");
-  decompressed = decompressed.replace(/([a-z])/g, '"$1":{');
-  decompressed = decompressed.replace(/([0-9]+)/g, "$1,").slice(0, -1);
-  decompressed = decompressed.replace(/\$([^0-9])/g, "$,$1");
-  const getEndBrackets = (c) => "}".repeat(parseInt(c, 10));
-  decompressed = decompressed.replace(/([0-9]+)/g, getEndBrackets);
-  decompressed = decompressed.replaceAll("$", '"$":1');
-  return makeWordsFrom(JSON.parse(decompressed));
+  const words = [];
+  const places = compressed
+    .split(";")
+    .map((place) =>
+      place
+        .match(/([a-z])([0-9]+)?/g)
+        .map((match) => [
+          match[0],
+          match.length > 1 ? parseInt(match.slice(1)) : 1,
+        ])
+    );
+  const counts = [
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0],
+  ];
+  places[0].forEach(([char, num]) => {
+    for (let a = 0; a < num; a++) {
+      let word = char;
+      for (let b = 1; b < 5; b++) {
+        word += places[b][counts[b][0]][0];
+        counts[b][1]++;
+        if (counts[b][1] >= places[b][counts[b][0]][1]) {
+          counts[b][1] = 0;
+          counts[b][0]++;
+        }
+      }
+      words.push(word);
+    }
+  });
+  return words.map((w) => w.split("").reverse().join(""));
 }
 
-const words = decompress(compressedTrie);
+const words = decompress(compressed);
+console.log(words.length);
 
 function filteredByInputs({ gray, green, notheres, somewheres }) {
   const disallows = {};
